@@ -8,8 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- GSAP for Smooth Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <!-- Fonts - Sora and Plus Jakarta Sans fully support Vietnamese -->
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Fonts - Be Vietnam Pro & Plus Jakarta Sans fully support Vietnamese with no diacritic mismatch -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -22,9 +22,9 @@
                         bordercolor: '#222222'
                     },
                     fontFamily: {
-                        sora: ['Sora', 'sans-serif'],
-                        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        bevietnam: ['"Be Vietnam Pro"', 'sans-serif'],
+                        jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
                     }
                 }
             }
@@ -106,7 +106,7 @@
         .animate-marquee {
             display: flex;
             width: max-content;
-            animation: marquee 30s linear infinite;
+            animation: marquee 35s linear infinite;
         }
     </style>
 </head>
@@ -121,7 +121,7 @@
 
     <!-- Header / Sticky Navigation -->
     <header class="fixed top-0 left-0 w-full z-50 bg-darkbg/90 backdrop-blur-md border-b-2 border-bordercolor px-6 md:px-12 py-4 flex justify-between items-center">
-        <a href="#home" class="font-sora font-extrabold text-2xl tracking-tighter text-white hover:text-cyberneon transition-colors duration-300">
+        <a href="#home" class="font-bevietnam font-extrabold text-2xl tracking-tighter text-white hover:text-cyberneon transition-colors duration-300">
             NDL<span class="text-cyberneon">.</span>25040282
         </a>
         <nav class="hidden lg:flex items-center gap-8 font-mono text-xs uppercase tracking-widest">
@@ -138,12 +138,12 @@
         </div>
     </header>
 
-    <!-- Parallax Hero Section with back.jpg -->
+    <!-- Parallax Hero Section with back.jpg (Original Color) -->
     <section id="home" class="relative min-h-screen flex flex-col justify-end pt-32 pb-16 px-6 md:px-12 overflow-hidden border-b-2 border-bordercolor">
-        <!-- Parallax Background Image -->
+        <!-- Parallax Background Image (No grayscale filter) -->
         <div class="absolute inset-0 z-0">
-            <div class="parallax-bg absolute inset-0 w-full h-[120%] bg-cover bg-center filter grayscale contrast-125 brightness-50" style="background-image: url('back.jpg');"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-darkbg via-darkbg/30 to-transparent"></div>
+            <div class="parallax-bg absolute inset-0 w-full h-[120%] bg-cover bg-center filter contrast-105 brightness-[0.4]" style="background-image: url('back.jpg');"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-darkbg via-darkbg/20 to-transparent"></div>
         </div>
 
         <!-- Decorative Stickers (K-pop Concept Style) -->
@@ -163,7 +163,7 @@
                 <span class="font-mono text-cyberneon uppercase tracking-widest text-sm bg-cyberneon/10 border border-cyberneon/20 px-3 py-1 rounded-full inline-block">
                     Digital Portfolio // Studio Album
                 </span>
-                <h1 class="font-sora font-extrabold text-5xl md:text-8xl tracking-tighter leading-none uppercase">
+                <h1 class="font-bevietnam font-extrabold text-5xl md:text-8xl tracking-tighter leading-none uppercase">
                     NGUYỄN <br>
                     <span class="text-cyberneon text-stroke">DIỆU LINH</span>
                 </h1>
@@ -188,7 +188,7 @@
 
         <!-- Sliding Marquee text at the bottom of hero -->
         <div class="absolute bottom-0 left-0 w-full bg-cyberneon py-2 overflow-hidden border-t-2 border-black rotate-[-1deg] translate-y-3 z-20">
-            <div class="animate-marquee font-sora font-extrabold uppercase text-xs text-black tracking-widest">
+            <div class="animate-marquee font-bevietnam font-extrabold uppercase text-xs text-black tracking-widest">
                 <span class="mx-4">K-Language & Digital Tech •</span>
                 <span class="mx-4">AI Companion & Education •</span>
                 <span class="mx-4">Nguyễn Diệu Linh - 25040282 •</span>
@@ -206,12 +206,12 @@
         <div class="max-w-6xl mx-auto space-y-16">
             
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                <!-- K-pop Album Photo Card Styling -->
+                <!-- K-pop Album Photo Card (Original Color) -->
                 <div class="lg:col-span-5 flex justify-center">
                     <div class="relative group max-w-sm w-full">
                         <div class="relative z-10 bg-cardbg border-2 border-white p-4 brutal-shadow-white group-hover:scale-[1.02] transition-transform duration-300">
                             <div class="aspect-[3/4] w-full bg-neutral-800 overflow-hidden relative">
-                                <img src="Hình 1.jpg" alt="Nguyễn Diệu Linh Avatar" class="w-full h-full object-cover grayscale contrast-115 brightness-95 group-hover:grayscale-0 transition-all duration-500">
+                                <img src="Hình 1.jpg" alt="Nguyễn Diệu Linh Avatar" class="w-full h-full object-cover contrast-105 brightness-95 transition-all duration-500">
                                 <div class="absolute bottom-3 left-3 bg-black/80 border border-cyberneon text-cyberneon px-2 py-1 font-mono text-[10px] uppercase">
                                     VNU - ULIS // LINH
                                 </div>
@@ -233,7 +233,7 @@
                 <div class="lg:col-span-7 space-y-6">
                     <div class="flex items-center gap-4">
                         <span class="font-mono text-cyberneon text-lg">01//</span>
-                        <h2 class="font-sora font-extrabold text-4xl uppercase tracking-tighter">Bản sắc cá nhân</h2>
+                        <h2 class="font-bevietnam font-extrabold text-4xl uppercase tracking-tighter">BẢN SẮC CÁ NHÂN</h2>
                     </div>
                     
                     <p class="text-gray-300 leading-relaxed text-sm md:text-base">
@@ -285,7 +285,7 @@
                 <div>
                     <div class="flex items-center gap-4">
                         <span class="font-mono text-cyberneon text-lg">02//</span>
-                        <h2 class="font-sora font-extrabold text-4xl uppercase tracking-tighter">TRACKLIST DỰ ÁN</h2>
+                        <h2 class="font-bevietnam font-extrabold text-4xl uppercase tracking-tighter">TRACKLIST DỰ ÁN</h2>
                     </div>
                     <p class="text-gray-400 text-xs md:text-sm font-mono mt-2">Bấm chọn từng Track bên dưới để đọc báo cáo chi tiết và trải nghiệm phần minh họa tương tác</p>
                 </div>
@@ -304,7 +304,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8">
                 
                 <!-- Left Menu (The Tracklist) -->
-                <div class="lg:col-span-5 flex flex-col gap-3 font-sora">
+                <div class="lg:col-span-5 flex flex-col gap-3 font-bevietnam">
                     <button onclick="switchTask(1)" id="track-btn-1" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-cyberneon flex items-center justify-between transition-all duration-300">
                         <div class="flex items-center gap-4">
                             <span class="font-mono text-xs text-cyberneon tracking-wider">01//</span>
@@ -392,35 +392,35 @@
             
             <div class="flex items-center gap-4">
                 <span class="font-mono text-cyberneon text-lg">03//</span>
-                <h2 class="font-sora font-extrabold text-4xl uppercase tracking-tighter">TỔNG KẾT HÀNH TRÌNH</h2>
+                <h2 class="font-bevietnam font-extrabold text-4xl uppercase tracking-tighter">TỔNG KẾT HÀNH TRÌNH</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-cardbg p-6 border-2 border-white brutal-shadow-white space-y-4">
-                    <div class="w-10 h-10 bg-cyberneon text-black rounded-full flex items-center justify-center font-sora font-extrabold text-lg">
+                    <div class="w-10 h-10 bg-cyberneon text-black rounded-full flex items-center justify-center font-bevietnam font-extrabold text-lg">
                         1
                     </div>
-                    <h3 class="font-sora font-extrabold text-lg uppercase tracking-tight">Kiến thức số hoá</h3>
+                    <h3 class="font-bevietnam font-extrabold text-lg uppercase tracking-tight">Kiến thức số hoá</h3>
                     <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
                         Chuyển đổi từ tư duy lưu trữ thụ động sang mô hình hóa dữ liệu khoa học, chuyên nghiệp hóa phong cách làm việc nhóm bằng cách tích hợp Notion và Drive, giúp năng suất công việc của mình tăng lên vượt bậc.
                     </p>
                 </div>
 
                 <div class="bg-cardbg p-6 border-2 border-white brutal-shadow-white space-y-4">
-                    <div class="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center font-sora font-extrabold text-lg">
+                    <div class="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center font-bevietnam font-extrabold text-lg">
                         2
                     </div>
-                    <h3 class="font-sora font-extrabold text-lg uppercase tracking-tight">Kỹ năng làm chủ AI</h3>
+                    <h3 class="font-bevietnam font-extrabold text-lg uppercase tracking-tight">Kỹ năng làm chủ AI</h3>
                     <p class="text-gray-400 text-xs md:text-sm leading-relaxed">
                         Lĩnh hội sâu sắc nghệ thuật viết prompt để giải quyết bài toán tự học hiệu quả. Việc phối hợp thông minh giữa ChatGPT và Gemini để thiết lập học liệu thông minh giúp cải thiện đáng kể kết quả học tiếng Hàn.
                     </p>
                 </div>
 
                 <div class="bg-cyberneon p-6 border-2 border-black brutal-shadow text-black space-y-4">
-                    <div class="w-10 h-10 bg-black text-cyberneon rounded-full flex items-center justify-center font-sora font-extrabold text-lg">
+                    <div class="w-10 h-10 bg-black text-cyberneon rounded-full flex items-center justify-center font-bevietnam font-extrabold text-lg">
                         3
                     </div>
-                    <h3 class="font-sora font-extrabold text-lg uppercase tracking-tight">Ý thức liêm chính</h3>
+                    <h3 class="font-bevietnam font-extrabold text-lg uppercase tracking-tight">Ý thức liêm chính</h3>
                     <p class="text-black/85 text-xs md:text-sm leading-relaxed">
                         Hiểu rõ quy chuẩn liêm chính học thuật của trường Đại học Ngoại ngữ - ĐHQGHN, cam kết tuân thủ đạo đức khi dùng công nghệ bổ trợ, không lạm dụng, luôn đặt tính minh bạch và nguyên bản của tư duy lên hàng đầu.
                     </p>
@@ -429,7 +429,7 @@
 
             <div class="bg-cardbg border border-bordercolor p-8 text-center max-w-3xl mx-auto space-y-4">
                 <span class="font-mono text-xs text-cyberneon">// DIỆU LINH'S REFLECTION //</span>
-                <p class="font-sora font-bold text-xl md:text-2xl text-white italic leading-relaxed">
+                <p class="font-bevietnam font-bold text-xl md:text-2xl text-white italic leading-relaxed">
                     "Công nghệ số và trí tuệ nhân tạo không phải là một lối tắt để lười biếng, mà là bàn đạp vững chắc để bứt phá giới hạn tư duy nếu ta biết cách kiểm soát nó."
                 </p>
                 <span class="font-mono text-xs text-gray-500">— Nguyễn Diệu Linh - MSSV: 25040282</span>
@@ -448,7 +448,7 @@
             </div>
             <div class="text-center md:text-right">
                 <p>© 2026 Digital Portfolio. Designed with K-Pop Hiphop Concept.</p>
-                <p class="mt-1 text-[10px] text-cyberneon">// Powered by GSAP & Sora/Jakarta Fonts</p>
+                <p class="mt-1 text-[10px] text-cyberneon">// Powered by GSAP & Be Vietnam Pro/Jakarta Fonts</p>
             </div>
         </div>
     </footer>
@@ -736,7 +736,7 @@
                             <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1.5">
                                 <strong class="text-cyberneon text-[11px] block font-mono">// Ứng dụng 1: ChatGPT giải thích ngữ pháp "-(으)ㄹ 수 있다"</strong>
                                 <p class="text-gray-400"><strong>Yêu cầu:</strong> Đóng vai giáo viên tiếng Hàn giải thích đơn giản cho sinh viên TOPIK 2.</p>
-                                <p class="text-white"><strong>Kết quả đầu ra:</strong> ChatGPT phân tích rõ cấu trúc gồm ý nghĩa (Khả năng, năng lực) và điều kiện cơ hội để làm việc gì đó. Trực quan hóa cấu trúc động từ có patchim (먹다 -> 먹을 수 있다), động từ không có patchim (가다 -> 갈 수 있다), và động từ kết thúc bằng ㄹ (만들다 -> 만들 수 있다). Giúp người học tiếp thu bài học dễ dàng và trơn tru.</p>
+                                <p class="text-white"><strong>Kết quả đầu ra:</strong> ChatGPT phân tích rõ cấu trúc gồm ý nghĩa (Khả năng, năng lực) và điều kiện cơ hội để làm việc gì đó. Trực quan hóa cấu trúc động từ có patchim (먹다 -> 먹을 수 있다), động từ không có patchim (가da -> 갈 수 있다), và động từ kết thúc bằng ㄹ (만들다 -> 만들 수 있다). Giúp người học tiếp thu bài học dễ dàng và trơn tru.</p>
                             </div>
 
                             <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1.5">
@@ -852,14 +852,14 @@
             const interactiveArea = document.getElementById('task-interactive-area');
 
             if (tab === 'report') {
-                reportBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300";
-                interactiveBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300";
+                reportBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
+                interactiveBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
                 reportArea.classList.remove('hidden');
                 interactiveArea.classList.add('hidden');
                 renderReportContent();
             } else {
-                interactiveBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300";
-                reportBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300";
+                interactiveBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
+                reportBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
                 interactiveArea.classList.remove('hidden');
                 reportArea.classList.add('hidden');
                 renderInteractiveContent();
@@ -879,7 +879,7 @@
                     container.innerHTML = `
                         <div>
                             <span class="font-mono text-xs text-cyberneon font-bold uppercase tracking-wider block mb-1">// ${targetData.badge}</span>
-                            <h3 class="font-sora font-extrabold text-2xl text-white uppercase tracking-tight">${targetData.title}</h3>
+                            <h3 class="font-bevietnam font-extrabold text-2xl text-white uppercase tracking-tight">${targetData.title}</h3>
                         </div>
                         <div class="space-y-4">
                             ${targetData.report}
@@ -1072,7 +1072,7 @@
                 <div class="space-y-1.5 text-white">
                     <span class="text-cyberneon font-bold block">// DÀN Ý 7 SLIDE DO AI THIẾT LẬP:</span>
                     <p><strong>Slide 1:</strong> Tiêu đề bài thuyết trình.</p>
-                    <p><strong>Slide 2:</strong> Cách AI đồng hành và hỗ trợ học thuật (Mindset "đối tác tư duy").</p>
+                    <p><strong>Slide 2:</strong> Cách AI đồng hành và hỗ trợ học thuật (Mindset \"đối tác tư duy\").</p>
                     <p><strong>Slide 3:</strong> Trách nhiệm thiết yếu của sinh viên khi dùng công nghệ.</p>
                     <p><strong>Slide 4:</strong> Các rủi ro đạo đức lớn (Đạo văn, lạm dụng).</p>
                     <p><strong>Slide 5:</strong> Nguyên tắc liêm chính học thuật (Minh bạch nguồn lực).</p>
