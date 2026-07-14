@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nguyễn Diệu Linh | Digital Portfolio</title>
+    <title>Nguyễn Diệu Linh Portfolio</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- GSAP for Smooth Animations -->
@@ -98,6 +98,7 @@
         }
         .animate-spin-slow {
             animation: spin-slow 20s linear infinite;
+            animation-play-state: paused; /* Controlled by JS based on music play state */
         }
         @keyframes marquee {
             0% { transform: translateX(0%); }
@@ -108,9 +109,21 @@
             width: max-content;
             animation: marquee 35s linear infinite;
         }
+        /* Music equalizer animation */
+        @keyframes bounce-bar {
+            0%, 100% { height: 4px; }
+            50% { height: 20px; }
+        }
+        .eq-bar {
+            animation: bounce-bar 0.8s ease infinite;
+            animation-play-state: paused;
+        }
+        .eq-bar:nth-child(2) { animation-delay: 0.15s; animation-duration: 0.6s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.3s; animation-duration: 0.9s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.45s; animation-duration: 0.7s; }
     </style>
 </head>
-<body class="bg-darkbg text-white overflow-x-hidden selection:bg-cyberneon selection:text-black">
+<body class="bg-darkbg text-white overflow-x-hidden selection:bg-cyberneon selection:text-black font-jakarta">
 
     <!-- Custom Cursor elements -->
     <div class="custom-cursor hidden md:block"></div>
@@ -118,6 +131,33 @@
 
     <!-- Background Noise Overlay -->
     <div class="noise-bg"></div>
+
+    <!-- Audio Element (Wassup - CORTIS.mp3) -->
+    <audio id="bg-audio" loop src="Wassup - CORTIS.mp3"></audio>
+
+    <!-- Floating Audio Cassette Player Widget -->
+    <div class="fixed bottom-6 left-6 z-50 bg-cardbg border-2 border-white p-3 brutal-shadow-white flex items-center gap-4 max-w-xs transition-transform hover:scale-[1.02] duration-300">
+        <button onclick="toggleAudio()" id="audio-control-btn" class="w-10 h-10 bg-cyberneon border-2 border-black rounded flex items-center justify-center shrink-0 hover:bg-white transition-colors duration-200" title="Bật/Tắt Nhạc">
+            <!-- Play/Pause SVG controlled by JS -->
+            <svg id="play-icon" class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="pause-icon" class="w-5 h-5 text-black hidden" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+        </button>
+        <div class="font-mono text-[9px] uppercase tracking-wider overflow-hidden">
+            <span class="text-cyberneon font-bold block animate-pulse">Now Playing</span>
+            <span class="text-white block whitespace-nowrap overflow-ellipsis">Wassup - CORTIS.mp3</span>
+        </div>
+        <!-- Equalizer Waveform Animation -->
+        <div class="flex items-end gap-0.5 h-6 shrink-0 px-1 border-l border-bordercolor">
+            <div class="eq-bar w-1 bg-cyberneon rounded-t"></div>
+            <div class="eq-bar w-1 bg-cyberneon rounded-t"></div>
+            <div class="eq-bar w-1 bg-cyberneon rounded-t"></div>
+            <div class="eq-bar w-1 bg-cyberneon rounded-t"></div>
+        </div>
+    </div>
 
     <!-- Header / Sticky Navigation -->
     <header class="fixed top-0 left-0 w-full z-50 bg-darkbg/90 backdrop-blur-md border-b-2 border-bordercolor px-6 md:px-12 py-4 flex justify-between items-center">
@@ -175,7 +215,7 @@
 
             <!-- Rotating Vinyl CD Graphic -->
             <div class="relative w-40 h-40 md:w-56 md:h-56 shrink-0 flex items-center justify-center hidden sm:flex">
-                <div class="absolute w-full h-full bg-neutral-900 rounded-full border-4 border-neutral-800 animate-spin-slow shadow-2xl flex items-center justify-center">
+                <div id="hero-vinyl" class="absolute w-full h-full bg-neutral-900 rounded-full border-4 border-neutral-800 animate-spin-slow shadow-2xl flex items-center justify-center">
                     <div class="w-1/2 h-1/2 bg-cyberneon rounded-full border-4 border-black flex items-center justify-center">
                         <div class="w-6 h-6 bg-black rounded-full"></div>
                     </div>
@@ -305,50 +345,50 @@
                 
                 <!-- Left Menu (The Tracklist) -->
                 <div class="lg:col-span-5 flex flex-col gap-3 font-bevietnam">
-                    <button onclick="switchTask(1)" id="track-btn-1" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-cyberneon flex items-center justify-between transition-all duration-300">
+                    <button onclick="switchTask(1)" id="track-btn-1" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-cyberneon flex items-center justify-between transition-all duration-300 font-bevietnam">
                         <div class="flex items-center gap-4">
                             <span class="font-mono text-xs text-cyberneon tracking-wider">01//</span>
-                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200">Thao tác cơ bản tệp tin</span>
+                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200 font-bevietnam">Thao tác cơ bản tệp tin</span>
                         </div>
                         <span class="font-mono text-xs text-neutral-600 group-hover:text-cyberneon">// Track.01</span>
                     </button>
                     
-                    <button onclick="switchTask(2)" id="track-btn-2" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300">
+                    <button onclick="switchTask(2)" id="track-btn-2" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300 font-bevietnam">
                         <div class="flex items-center gap-4">
                             <span class="font-mono text-xs text-gray-500 tracking-wider">02//</span>
-                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200">Tìm kiếm & Đánh giá tin</span>
+                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200 font-bevietnam">Tìm kiếm & Đánh giá tin</span>
                         </div>
                         <span class="font-mono text-xs text-neutral-600 group-hover:text-cyberneon">// Track.02</span>
                     </button>
 
-                    <button onclick="switchTask(3)" id="track-btn-3" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300">
+                    <button onclick="switchTask(3)" id="track-btn-3" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300 font-bevietnam">
                         <div class="flex items-center gap-4">
                             <span class="font-mono text-xs text-gray-500 tracking-wider">03//</span>
-                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200">Viết Prompt hiệu quả</span>
+                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200 font-bevietnam">Viết Prompt hiệu quả</span>
                         </div>
                         <span class="font-mono text-xs text-neutral-600 group-hover:text-cyberneon">// Track.03</span>
                     </button>
 
-                    <button onclick="switchTask(4)" id="track-btn-4" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300">
+                    <button onclick="switchTask(4)" id="track-btn-4" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300 font-bevietnam">
                         <div class="flex items-center gap-4">
                             <span class="font-mono text-xs text-gray-500 tracking-wider">04//</span>
-                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200">Hợp tác số & Quản lý nhóm</span>
+                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200 font-bevietnam">Hợp tác số & Quản lý nhóm</span>
                         </div>
                         <span class="font-mono text-xs text-neutral-600 group-hover:text-cyberneon">// Track.04</span>
                     </button>
 
-                    <button onclick="switchTask(5)" id="track-btn-5" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300">
+                    <button onclick="switchTask(5)" id="track-btn-5" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300 font-bevietnam">
                         <div class="flex items-center gap-4">
                             <span class="font-mono text-xs text-gray-500 tracking-wider">05//</span>
-                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200">Sáng tạo nội dung với AI</span>
+                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200 font-bevietnam">Sáng tạo nội dung với AI</span>
                         </div>
                         <span class="font-mono text-xs text-neutral-600 group-hover:text-cyberneon">// Track.05</span>
                     </button>
 
-                    <button onclick="switchTask(6)" id="track-btn-6" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300">
+                    <button onclick="switchTask(6)" id="track-btn-6" class="task-btn group w-full text-left p-4 bg-cardbg hover:bg-neutral-900 border-l-4 border-transparent flex items-center justify-between transition-all duration-300 font-bevietnam">
                         <div class="flex items-center gap-4">
                             <span class="font-mono text-xs text-gray-500 tracking-wider">06//</span>
-                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200">Sử dụng AI có trách nhiệm</span>
+                            <span class="text-sm font-bold uppercase tracking-tight group-hover:text-cyberneon transition-colors duration-200 font-bevietnam">Sử dụng AI có trách nhiệm</span>
                         </div>
                         <span class="font-mono text-xs text-neutral-600 group-hover:text-cyberneon">// Track.06</span>
                     </button>
@@ -358,10 +398,10 @@
                 <div class="lg:col-span-7 space-y-4">
                     <!-- Tab Headers -->
                     <div class="flex border-b border-bordercolor font-mono text-xs">
-                        <button onclick="switchSubTab('report')" id="subtab-report" class="px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300">
+                        <button onclick="switchSubTab('report')" id="subtab-report" class="px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam text-xs">
                             [01/ Báo cáo chi tiết]
                         </button>
-                        <button onclick="switchSubTab('interactive')" id="subtab-interactive" class="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300">
+                        <button onclick="switchSubTab('interactive')" id="subtab-interactive" class="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam text-xs">
                             [02/ Minh họa tương tác]
                         </button>
                     </div>
@@ -497,6 +537,62 @@
         let currentTaskId = 1;
         let currentSubTab = 'report'; // 'report' or 'interactive'
 
+        // Audio controls
+        const bgAudio = document.getElementById('bg-audio');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const eqBars = document.querySelectorAll('.eq-bar');
+        const heroVinyl = document.getElementById('hero-vinyl');
+        let isAudioPlaying = false;
+
+        function toggleAudio() {
+            if (isAudioPlaying) {
+                bgAudio.pause();
+                isAudioPlaying = false;
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                eqBars.forEach(bar => bar.style.animationPlayState = 'paused');
+                if (heroVinyl) heroVinyl.style.animationPlayState = 'paused';
+            } else {
+                bgAudio.play().then(() => {
+                    isAudioPlaying = true;
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                    eqBars.forEach(bar => bar.style.animationPlayState = 'running');
+                    if (heroVinyl) heroVinyl.style.animationPlayState = 'running';
+                }).catch(err => {
+                    console.log("Audio play blocked by browser:", err);
+                });
+            }
+        }
+
+        // Graceful autoplay bypass on load or first user interaction
+        function initAutoplay() {
+            bgAudio.play().then(() => {
+                isAudioPlaying = true;
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                eqBars.forEach(bar => bar.style.animationPlayState = 'running');
+                if (heroVinyl) heroVinyl.style.animationPlayState = 'running';
+            }).catch(() => {
+                // Autoplay blocked, wait for user's first click or touch
+                const handleFirstInteract = () => {
+                    bgAudio.play().then(() => {
+                        isAudioPlaying = true;
+                        playIcon.classList.add('hidden');
+                        pauseIcon.classList.remove('hidden');
+                        eqBars.forEach(bar => bar.style.animationPlayState = 'running');
+                        if (heroVinyl) heroVinyl.style.animationPlayState = 'running';
+                    });
+                    document.removeEventListener('click', handleFirstInteract);
+                    document.removeEventListener('touchstart', handleFirstInteract);
+                };
+                document.addEventListener('click', handleFirstInteract);
+                document.addEventListener('touchstart', handleFirstInteract);
+            });
+        }
+        window.addEventListener('DOMContentLoaded', initAutoplay);
+
         // 10 distinct articles for Task 2
         const articlesTask2 = [
             { id: 1, author: "Chapelle (2001)", title: "Computer Applications in Second Language Acquisition", source: "Cambridge University Press", method: "Phân tích lý thuyết + thực nghiệm", year: "2001", trust: "Rất cao" },
@@ -520,23 +616,23 @@
                 report: `
                     <div class="bg-black/50 border border-bordercolor p-4 space-y-1">
                         <span class="text-white font-mono block uppercase font-bold text-xs text-cyberneon">// MỤC TIÊU CỐT LÕI:</span>
-                        <p class="text-xs text-gray-300">Nắm vững cách tổ chức, phân cấp tệp tin khoa học trên hệ điều hành Windows để xây dựng môi trường học tập số gọn gàng, tránh thất lạc hay mất mát dữ liệu học thuật.</p>
+                        <p class="text-xs text-gray-300 font-jakarta">Nắm vững cách tổ chức, phân cấp tệp tin khoa học trên hệ điều hành Windows để xây dựng môi trường học tập số gọn gàng, tránh thất lạc hay mất mát dữ liệu học thuật.</p>
                     </div>
                     <div class="space-y-3 font-jakarta text-xs text-gray-300">
                         <span class="text-white font-mono block uppercase font-bold text-xs">// 12 BƯỚC TRIỂN KHAI CHI TIẾT:</span>
                         <ol class="list-decimal list-inside space-y-1.5 leading-relaxed">
-                            <li><strong class="text-white">Bước 1: Mở File Explorer</strong> - Nhấn tổ hợp phím <code class="text-cyberneon bg-neutral-900 px-1 border border-bordercolor rounded">Windows + E</code> hoặc nhấn trực tiếp vào biểu tượng thư mục màu vàng ở thanh Taskbar.</li>
+                            <li><strong class="text-white">Bước 1: Mở File Explorer</strong> - Nhấn tổ hợp phím <code class="text-cyberneon bg-neutral-900 px-1 border border-bordercolor rounded font-mono">Windows + E</code> hoặc nhấn trực tiếp vào biểu tượng thư mục màu vàng ở thanh Taskbar.</li>
                             <li><strong class="text-white">Bước 2: Truy cập ổ đĩa</strong> - Tại cột bên trái, chọn <em>This PC</em> rồi bấm đúp chuột vào ổ đĩa không chứa hệ điều hành (ví dụ: ổ D:, E:). Nếu chỉ có một ổ, truy cập vào <em>Documents</em>.</li>
-                            <li><strong class="text-white">Bước 3: Tạo thư mục tổng</strong> - Click chuột phải vào vùng trống, chọn <code class="text-cyberneon">New -> Folder</code>. Đặt tên thư mục tổng theo chuẩn: <code class="text-cyberneon">ThucHanh_NguyenDieuLinh</code>.</li>
-                            <li><strong class="text-white">Bước 4: Vào thư mục tổng</strong> - Nhấn đúp chuột vào thư mục <code class="text-cyberneon">ThucHanh_NguyenDieuLinh</code> vừa tạo để tiến sâu vào bên trong.</li>
-                            <li><strong class="text-white">Bước 5: Tạo tệp văn bản mới</strong> - Click chuột phải vào vùng trống bên trong thư mục tổng, chọn <code class="text-cyberneon">New -> Text Document</code>. Đặt tên tệp tin ban đầu là <code class="text-cyberneon">GhiChu.txt</code>.</li>
-                            <li><strong class="text-white">Bước 6: Thực hiện đổi tên</strong> - Click chuột phải vào tệp tin <code class="text-cyberneon">GhiChu.txt</code>, chọn lệnh <code class="text-cyberneon">Rename</code> (hoặc bấm <code class="text-cyberneon">F2</code>), đổi tên thành <code class="text-cyberneon">GhiChuQuanTrong.txt</code>.</li>
-                            <li><strong class="text-white">Bước 7: Kiến tạo thư mục con</strong> - Tại khoảng trống bên trong thư mục tổng, click chuột phải chọn <code class="text-cyberneon">New -> Folder</code> để tạo thư mục con với tên <code class="text-cyberneon">TaiLieu</code>.</li>
-                            <li><strong class="text-white">Bước 8: Thực hành Copy & Paste</strong> - Click chuột phải vào tệp tin <code class="text-cyberneon">GhiChuQuanTrong.txt</code> chọn <code class="text-cyberneon">Copy</code> (hoặc phím <code class="text-cyberneon">Ctrl + C</code>). Bấm đúp vào thư mục con <code class="text-cyberneon">TaiLieu</code>, click chuột phải chọn <code class="text-cyberneon">Paste</code> (hoặc phím <code class="text-cyberneon">Ctrl + V</code>) để nhân bản tệp tin.</li>
-                            <li><strong class="text-white">Bước 9: Thực hành Di chuyển (Cut & Paste)</strong> - Quay trở lại thư mục tổng, tạo tệp văn bản mới tên <code class="text-cyberneon">DiChuyen.txt</code>. Click chuột phải chọn <code class="text-cyberneon">Cut</code> (hoặc phím <code class="text-cyberneon">Ctrl + X</code>). Vào lại thư mục con <code class="text-cyberneon">TaiLieu</code> và chọn <code class="text-cyberneon">Paste</code> (hoặc phím <code class="text-cyberneon">Ctrl + V</code>). Tệp tin gốc sẽ biến mất và chỉ xuất hiện ở vị trí mới.</li>
-                            <li><strong class="text-white">Bước 10: Thực hành Xóa tạm thời</strong> - Click chuột phải vào tệp tin <code class="text-cyberneon">GhiChuQuanTrong.txt</code> trong thư mục con <code class="text-cyberneon">TaiLieu</code>, nhấn phím <code class="text-cyberneon">Delete</code>. Tệp tin được đưa vào Thùng rác (Recycle Bin).</li>
-                            <li><strong class="text-white">Bước 11: Thực hành Xóa vĩnh viễn</strong> - Chọn tệp tin <code class="text-cyberneon">DiChuyen.txt</code>, nhấn giữ tổ hợp phím <code class="text-cyberneon">Shift + Delete</code>. Một hộp thoại cảnh báo hiện ra, bấm <em>Yes</em> để xóa vĩnh viễn tệp tin khỏi hệ thống mà không qua Recycle Bin.</li>
-                            <li><strong class="text-white">Bước 12: Thực hành Khôi phục dữ liệu</strong> - Trở lại màn hình Desktop, bấm đúp mở ứng dụng Recycle Bin. Tìm tệp tin <code class="text-cyberneon">GhiChuQuanTrong.txt</code> đã xóa ở Bước 10, click chuột phải chọn <code class="text-cyberneon">Restore</code> để phục hồi lại vị trí cũ của nó trong thư mục <code class="text-cyberneon">TaiLieu</code>.</li>
+                            <li><strong class="text-white">Bước 3: Tạo thư mục tổng</strong> - Click chuột phải vào vùng trống, chọn <code class="text-cyberneon font-mono">New -> Folder</code>. Đặt tên thư mục tổng theo chuẩn: <code class="text-cyberneon font-mono">ThucHanh_NguyenDieuLinh</code>.</li>
+                            <li><strong class="text-white">Bước 4: Vào thư mục tổng</strong> - Nhấn đúp chuột vào thư mục <code class="text-cyberneon font-mono">ThucHanh_NguyenDieuLinh</code> vừa tạo để tiến sâu vào bên trong.</li>
+                            <li><strong class="text-white">Bước 5: Tạo tệp văn bản mới</strong> - Click chuột phải vào vùng trống bên trong thư mục tổng, chọn <code class="text-cyberneon font-mono">New -> Text Document</code>. Đặt tên tệp tin ban đầu là <code class="text-cyberneon font-mono">GhiChu.txt</code>.</li>
+                            <li><strong class="text-white">Bước 6: Thực hiện đổi tên</strong> - Click chuột phải vào tệp tin <code class="text-cyberneon font-mono">GhiChu.txt</code>, chọn lệnh <code class="text-cyberneon font-mono">Rename</code> (hoặc bấm <code class="text-cyberneon font-mono">F2</code>), đổi tên thành <code class="text-cyberneon font-mono">GhiChuQuanTrong.txt</code>.</li>
+                            <li><strong class="text-white">Bước 7: Kiến tạo thư mục con</strong> - Tại khoảng trống bên trong thư mục tổng, click chuột phải chọn <code class="text-cyberneon font-mono">New -> Folder</code> để tạo thư mục con với tên <code class="text-cyberneon font-mono">TaiLieu</code>.</li>
+                            <li><strong class="text-white">Bước 8: Thực hành Copy & Paste</strong> - Click chuột phải vào tệp tin <code class="text-cyberneon font-mono">GhiChuQuanTrong.txt</code> chọn <code class="text-cyberneon font-mono">Copy</code> (hoặc phím <code class="text-cyberneon font-mono">Ctrl + C</code>). Bấm đúp vào thư mục con <code class="text-cyberneon font-mono">TaiLieu</code>, click chuột phải chọn <code class="text-cyberneon font-mono">Paste</code> (hoặc phím <code class="text-cyberneon font-mono">Ctrl + V</code>) để nhân bản tệp tin.</li>
+                            <li><strong class="text-white">Bước 9: Thực hành Di chuyển (Cut & Paste)</strong> - Quay trở lại thư mục tổng, tạo tệp văn bản mới tên <code class="text-cyberneon font-mono">DiChuyen.txt</code>. Click chuột phải chọn <code class="text-cyberneon font-mono">Cut</code> (hoặc phím <code class="text-cyberneon font-mono">Ctrl + X</code>). Vào lại thư mục con <code class="text-cyberneon font-mono">TaiLieu</code> và chọn <code class="text-cyberneon font-mono">Paste</code> (hoặc phím <code class="text-cyberneon font-mono">Ctrl + V</code>). Tệp tin gốc sẽ biến mất và chỉ xuất hiện ở vị trí mới.</li>
+                            <li><strong class="text-white">Bước 10: Thực hành Xóa tạm thời</strong> - Click chuột phải vào tệp tin <code class="text-cyberneon font-mono">GhiChuQuanTrong.txt</code> trong thư mục con <code class="text-cyberneon font-mono">TaiLieu</code>, nhấn phím <code class="text-cyberneon font-mono">Delete</code>. Tệp tin được đưa vào Thùng rác (Recycle Bin).</li>
+                            <li><strong class="text-white">Bước 11: Thực hành Xóa vĩnh viễn</strong> - Chọn tệp tin <code class="text-cyberneon font-mono">DiChuyen.txt</code>, nhấn giữ tổ hợp phím <code class="text-cyberneon font-mono">Shift + Delete</code>. Một hộp thoại cảnh báo hiện ra, bấm <em>Yes</em> để xóa vĩnh viễn tệp tin khỏi hệ thống mà không qua Recycle Bin.</li>
+                            <li><strong class="text-white">Bước 12: Thực hành Khôi phục dữ liệu</strong> - Trở lại màn hình Desktop, bấm đúp mở ứng dụng Recycle Bin. Tìm tệp tin <code class="text-cyberneon font-mono">GhiChuQuanTrong.txt</code> đã xóa ở Bước 10, click chuột phải chọn <code class="text-cyberneon font-mono">Restore</code> để phục hồi lại vị trí cũ của nó trong thư mục <code class="text-cyberneon font-mono">TaiLieu</code>.</li>
                         </ol>
                     </div>
                     <div class="bg-black/40 border border-bordercolor p-3 text-xs leading-relaxed">
@@ -576,7 +672,7 @@
                 report: `
                     <div class="bg-black/50 border border-bordercolor p-4 space-y-1">
                         <span class="text-white font-mono block uppercase font-bold text-xs text-cyberneon">// MỤC TIÊU CỐT LÕI:</span>
-                        <p class="text-xs text-gray-300">Học cách chọn lọc thông tin, gạn đục khơi trong giữa biển dữ liệu số để tìm kiếm, tổng hợp và thẩm định độ tin cậy của các tài liệu học thuật liên quan đến đề tài nghiên cứu.</p>
+                        <p class="text-xs text-gray-300 font-jakarta">Học cách chọn lọc thông tin, gạn đục khơi trong giữa biển dữ liệu số để tìm kiếm, tổng hợp và thẩm định độ tin cậy của các tài liệu học thuật liên quan đến đề tài nghiên cứu.</p>
                     </div>
                     <div class="space-y-3 font-jakarta text-xs text-gray-300 max-h-[300px] overflow-y-auto pr-2">
                         <span class="text-white font-mono block uppercase font-bold text-xs">// PHƯƠNG PHÁP NGHIÊN CỨU & 10 NGUỒN TÀI LIỆU HỌC THUẬT:</span>
@@ -620,45 +716,71 @@
                 report: `
                     <div class="bg-black/50 border border-bordercolor p-4 space-y-1">
                         <span class="text-white font-mono block uppercase font-bold text-xs text-cyberneon">// MỤC TIÊU CỐT LÕI:</span>
-                        <p class="text-xs text-gray-300">Tìm hiểu và làm chủ cách cấu trúc câu lệnh (Prompt) theo các cấp độ để kiểm soát tối ưu kết quả đầu ra của AI cho các tác vụ học thuật khác nhau.</p>
+                        <p class="text-xs text-gray-300 font-jakarta">Nghiên cứu cấu trúc câu lệnh và kiểm chứng chất lượng câu trả lời từ AI theo 3 cấp độ (Cơ bản, Cải tiến, Nâng cao), áp dụng kỹ nghệ Prompt vào hỗ trợ tối đa việc học thuật độc lập.</p>
                     </div>
                     <div class="space-y-3 font-jakarta text-xs text-gray-300 max-h-[300px] overflow-y-auto pr-2 leading-relaxed">
-                        <span class="text-white font-mono block uppercase font-bold text-xs">// PHÂN TÍCH 3 TÁC VỤ PROMPTING CHUYÊN SÂU:</span>
+                        <span class="text-white font-mono block uppercase font-bold text-xs">// PHÂN TÍCH 3 TÁC VỤ PROMPTING CHI TIẾT THEO BÁO CÁO:</span>
                         
                         <div class="space-y-3">
-                            <div class="border border-bordercolor p-3 bg-black/40 rounded">
-                                <strong class="text-cyberneon text-[11px] block uppercase font-mono">// Tác vụ 1: Tóm tắt tài liệu học thuật (Báo cáo UNICEF)</strong>
-                                <p class="mt-1 text-gray-400"><strong>Prompt Cơ bản:</strong> "Tóm tắt bài viết này" -> Kết quả: Sơ sài, mất ý chính, lan man.</p>
-                                <p class="text-gray-400"><strong>Prompt Cải tiến:</strong> "Hãy tóm tắt bài viết dưới đây trong khoảng 150 từ và nêu 3 tác động chính của mạng xã hội..." -> Kết quả: Ngắn gọn, có trọng tâm.</p>
-                                <p class="text-white"><strong>Prompt Nâng cao (Phân vai):</strong> "Hãy đóng vai một giảng viên tâm lý học giáo dục và tóm tắt bài báo dưới đây cho sinh viên năm nhất. Hãy giải thích bằng ngôn ngữ dễ hiểu, giữ các thuật ngữ quan trọng, trình bày dạng gạch đầu dòng và kết thúc bằng 3 ý chính cần ghi nhớ." -> Kết quả: Cực kỳ xuất sắc, có tính sư phạm cao, logic.</p>
+                            <!-- Tác vụ 1 -->
+                            <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1">
+                                <strong class="text-cyberneon text-[11px] block uppercase font-mono">// Tác vụ 1: Tóm tắt tài liệu học thuật</strong>
+                                <p class="text-gray-400"><strong>Tài liệu thực tế:</strong> Báo cáo từ UNICEF về tác động của mạng xã hội đến sức khỏe tâm thần thanh thiếu niên.</p>
+                                <p><strong>1. Prompt Cơ bản:</strong> <span class="italic text-gray-400">"Tóm tắt bài viết này"</span> -> <strong class="text-red-400">Kết quả:</strong> ChatGPT tóm tắt chung chung, không có cấu trúc, bỏ sót thông tin, không đúng trọng tâm.</p>
+                                <p><strong>2. Prompt Cải tiến:</strong> <span class="italic text-gray-400 font-mono">"Hãy tóm tắt bài viết dưới đây trong khoảng 150 từ và nêu 3 tác động chính của mạng xã hội đến sức khỏe tâm thần của thanh thiếu niên"</span> -> <strong class="text-yellow-400">Kết quả:</strong> Bản tóm tắt đi vào trọng tâm, ngắn gọn và chắt lọc các thông tin giá trị cao.</p>
+                                <p><strong>3. Prompt Nâng cao:</strong> <span class="italic text-gray-400 font-mono">"Hãy đóng vai một giảng viên tâm lý học giáo dục và tóm tắt bài báo dưới đây cho sinh viên năm nhất. Hãy: Giải thích bằng ngôn ngữ dễ hiểu, Giữ lại các thuật ngữ quan trọng (ví dụ passive scrolling, cyberbullying), Trình bày dưới dạng gạch đầu dòng, và Kết thúc bằng 3 ý chính cần ghi nhớ."</span> -> <strong class="text-cyberneon">Kết quả:</strong> Bản tóm tắt logic, giàu tính sư phạm, giữ độ sâu học thuật, có các khối bài học thực tiễn.</p>
                             </div>
 
-                            <div class="border border-bordercolor p-3 bg-black/40 rounded">
+                            <!-- Tác vụ 2 -->
+                            <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1">
                                 <strong class="text-cyberneon text-[11px] block uppercase font-mono">// Tác vụ 2: Giải thích khái niệm phức tạp (Blockchain)</strong>
-                                <p class="mt-1 text-gray-400"><strong>Prompt Cơ bản:</strong> "Giải thích blockchain" -> Kết quả: Đầy thuật ngữ chuyên môn khó hiểu.</p>
-                                <p class="text-gray-400"><strong>Prompt Cải tiến:</strong> "Hãy giải thích blockchain cho học sinh THPT chưa có kiến thức công nghệ..." -> Kết quả: Ngôn ngữ gần gũi, dễ hiểu hơn.</p>
-                                <p class="text-white"><strong>Prompt Nâng cao (Phép ẩn dụ):</strong> "Hãy đóng vai giáo viên CNTT và giải thích blockchain bằng phép so sánh với một cuốn sổ ghi chép công khai mà ai cũng xem được nhưng không ai tự sửa được..." -> Kết quả: Trực quan hóa cực đỉnh, chuyển đổi khái niệm trừu tượng thành hình ảnh quen thuộc.</p>
+                                <p><strong>1. Prompt Cơ bản:</strong> <span class="italic text-gray-400 font-mono">"Giải thích blockchain"</span> -> <strong class="text-red-400">Kết quả:</strong> Định nghĩa quá hàn lâm, chứa nhiều thuật ngữ công nghệ nặng nề gây khó tiếp thu cho người mới.</p>
+                                <p><strong>2. Prompt Cải tiến:</strong> <span class="italic text-gray-400 font-mono">"Hãy giải thích blockchain cho học sinh THPT chưa có kiến thức công nghệ. Sử dụng ví dụ thực tế và tránh thuật ngữ phức tạp."</span> -> <strong class="text-yellow-400">Kết quả:</strong> Câu trả lời gần gũi, sử dụng các phép ẩn dụ thực tế trong cuộc sống.</p>
+                                <p><strong>3. Prompt Nâng cao:</strong> <span class="italic text-gray-400 font-mono">"Hãy đóng vai giáo viên công nghệ thông tin và giải thích blockchain bằng phép so sánh với một cuốn sổ ghi chép công khai mà mọi người đều có thể xem nhưng không ai có thể tự ý sửa đổi. Hãy trình bày theo các bước: 1. Blockchain là gì, 2. Dữ liệu được lưu như thế nào, 3. Tại sao blockchain khó bị thay đổi, 4. Ứng dụng thực tế, 5. Hạn chế của blockchain. Sau mỗi phần, hãy đưa ra một ví dụ ngắn minh họa."</span> -> <strong class="text-cyberneon">Kết quả:</strong> Bài giảng có tính trực quan cực cao, sử dụng phép ẩn dụ thống nhất giúp chuyển đổi khái niệm khô khan thành hình ảnh ghi chép lớp học quen thuộc.</p>
                             </div>
 
-                            <div class="border border-bordercolor p-3 bg-black/40 rounded">
+                            <!-- Tác vụ 3 -->
+                            <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1">
                                 <strong class="text-cyberneon text-[11px] block uppercase font-mono">// Tác vụ 3: Tạo bộ câu hỏi ôn tập theo chủ đề</strong>
-                                <p class="mt-1 text-gray-400"><strong>Prompt Cơ bản:</strong> "Tạo câu hỏi ôn tập ngữ pháp tiếng Hàn" -> Kết quả: Câu hỏi quá chung chung, không kèm đáp án.</p>
-                                <p class="text-white"><strong>Prompt Nâng cao (Tiêu chí cụ thể):</strong> "Hãy đóng vai là chuyên gia giáo dục ngôn ngữ. Thiết kế bộ 5 câu hỏi ôn tập ngữ pháp TOPIK 2, kèm 4 phương án lựa chọn, chỉ rõ đáp án đúng và giải thích ngắn gọn lý do." -> Kết quả: Học liệu chuẩn hóa hoàn hảo, có tính thực chiến cao.</p>
+                                <p><strong>1. Prompt Cơ bản:</strong> <span class="italic text-gray-400 font-mono">"Tạo bộ câu hỏi ôn tập tiếng Hàn"</span> -> <strong class="text-red-400">Kết quả:</strong> Câu hỏi pha trộn lộn xộn các trình độ, không có đáp án giải thích hoặc không đúng ngữ pháp mục tiêu.</p>
+                                <p><strong>2. Prompt Nâng cao:</strong> <span class="italic text-gray-400 font-mono">"Tôi là người học tiếng Hàn ở trình độ TOPIK 2. Hãy đóng vai trò là giáo viên tiếng Hàn và tạo 5 câu trắc nghiệm luyện tập ngữ pháp '-아/어 보다'. Mỗi câu có 4 đáp án, kèm đáp án đúng và giải thích ngắn gọn."</span> -> <strong class="text-cyberneon">Kết quả:</strong> Bộ câu hỏi chuẩn hóa cao, lồng ghép các tình huống thực tế sinh động giúp ôn tập ngữ pháp sâu sắc.</p>
                             </div>
                         </div>
                     </div>
                 `,
                 interactive: `
-                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// MÔ PHỎNG SỰ KHÁC BIỆT PROMPT //</span>
-                    <div class="bg-neutral-900 border border-bordercolor p-4 rounded font-mono text-xs space-y-3">
-                        <label class="text-[10px] text-gray-500 uppercase">Chọn cấp độ Prompt cho Tác vụ "Blockchain":</label>
-                        <select id="prompt-level-select" onchange="runPromptTester()" class="w-full bg-black border border-bordercolor p-2 text-white focus:border-cyberneon outline-none">
-                            <option value="basic">Cấp độ 1: Cơ bản ("Giải thích blockchain")</option>
-                            <option value="improved">Cấp độ 2: Cải tiến ("Giải thích blockchain cho học sinh THPT")</option>
-                            <option value="advanced">Cấp độ 3: Nâng cao ("Đóng vai giáo viên, dùng ẩn dụ cuốn sổ công khai...")</option>
-                        </select>
-                        <div class="bg-black p-3 border border-bordercolor min-h-[140px] text-xs leading-relaxed" id="prompt-output-text">
-                            Bấm chọn cấp độ để giả lập câu trả lời của AI...
+                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// MÔ PHỎNG SO SÁNH BA CẤP ĐỘ PROMPT //</span>
+                    <div class="bg-neutral-900 border border-bordercolor p-4 rounded font-mono text-xs space-y-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-gray-500 uppercase block">Chọn tác vụ muốn xem:</label>
+                            <select id="task-scen-select" onchange="runPromptTester()" class="w-full bg-black border border-bordercolor p-2 text-white focus:border-cyberneon outline-none">
+                                <option value="unicef">Tác vụ 1: Tóm tắt bài báo UNICEF</option>
+                                <option value="blockchain">Tác vụ 2: Giải thích Blockchain</option>
+                                <option value="topik">Tác vụ 3: Tạo đề trắc nghiệm TOPIK 2</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-gray-500 uppercase block">Chọn cấp độ Prompt:</label>
+                            <select id="prompt-lvl-select" onchange="runPromptTester()" class="w-full bg-black border border-bordercolor p-2 text-white focus:border-cyberneon outline-none">
+                                <option value="basic">1 - Câu lệnh Cơ bản (Mơ hồ)</option>
+                                <option value="improved">2 - Câu lệnh Cải tiến (Đủ thông tin)</option>
+                                <option value="advanced">3 - Câu lệnh Nâng cao (Phân vai & Cấu trúc)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Real-time metrics visualization -->
+                        <div class="bg-black p-3 border border-bordercolor space-y-2">
+                            <div class="flex justify-between text-[10px] text-gray-400">
+                                <span>Chỉ số chất lượng đầu ra của AI:</span>
+                                <span id="prompt-metric-score" class="text-cyberneon font-bold">30%</span>
+                            </div>
+                            <div class="w-full bg-neutral-800 h-1.5 rounded-full overflow-hidden">
+                                <div id="prompt-metric-bar" class="bg-cyberneon h-full transition-all duration-500" style="width: 30%"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-black p-3 border border-bordercolor min-h-[140px] text-xs leading-relaxed" id="prompt-sim-output">
+                            Đang xử lý đầu ra...
                         </div>
                     </div>
                 `
@@ -670,51 +792,54 @@
                 report: `
                     <div class="bg-black/50 border border-bordercolor p-4 space-y-1">
                         <span class="text-white font-mono block uppercase font-bold text-xs text-cyberneon">// MỤC TIÊU CỐT LÕI:</span>
-                        <p class="text-xs text-gray-300">Xây dựng không gian làm việc số đồng bộ, quản lý phân rã công việc khoa học để tối ưu hóa sự phối hợp của tập thể nhóm, loại bỏ sự chồng chéo.</p>
+                        <p class="text-xs text-gray-300 font-jakarta">Thực hành xây dựng không gian làm việc số và quản trị phân rã công việc khoa học để phối hợp tối đa sức mạnh của tập thể nhóm, hoàn thiện dự án đúng tiến độ.</p>
                     </div>
                     <div class="space-y-3 font-jakarta text-xs text-gray-300 leading-relaxed max-h-[300px] overflow-y-auto pr-2">
-                        <span class="text-white font-mono block uppercase font-bold text-xs">// PHỐI HỢP & PHÂN VAI CỤ THỂ TRONG NHÓM 32:</span>
-                        <p>Đề tài triển khai: <strong class="text-white">"Ứng dụng của AI trong học tiếng Hàn"</strong> (Video độ dài 5-7 phút).</p>
+                        <span class="text-white font-mono block uppercase font-bold text-xs">// PHỐI HỢP & PHÂN VAI CỤ THỂ TRONG NHÓM 32 (CHỦ ĐỀ: AI TRONG HỌC TIẾNG HÀN):</span>
+                        <p>Nhóm tiến hành sản xuất sản phẩm cuối cùng là một video ngắn từ 5-7 phút để nói về các ví dụ, ứng dụng thực tế và hiệu quả của công nghệ AI trong việc nâng cao kỹ năng từ vựng, ngữ pháp, viết và hội thoại tiếng Hàn.</p>
                         
-                        <div class="border border-bordercolor p-3 bg-black/40 space-y-1">
-                            <strong class="text-cyberneon text-[11px] block font-mono">// Vai trò cốt lõi của Nguyễn Diệu Linh:</strong>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 text-[11px]">
-                                <li>Thiết kế ấn phẩm Canva phân tích sâu sắc các lợi ích và thách thức của AI.</li>
-                                <li>Thiết kế Thumbnail hấp dẫn, tối ưu thị giác cho video cuối cùng của nhóm.</li>
-                                <li>Đóng vai trò kiểm duyệt, rà soát phụ đề tiếng Hàn - tiếng Việt cho sản phẩm video.</li>
+                        <div class="border border-bordercolor p-3 bg-black/40 space-y-2">
+                            <strong class="text-cyberneon text-[11px] block font-mono">// Nhiệm vụ cốt lõi cá nhân Nguyễn Diệu Linh phụ trách:</strong>
+                            <ul class="list-disc list-inside space-y-1 text-gray-300 text-[11px] ml-1">
+                                <li>Thiết kế ấn phẩm Canva phân tích toàn diện các mặt lợi ích và thách thức khi dùng AI.</li>
+                                <li>Thiết kế Thumbnail hấp dẫn, tối ưu thị giác cho video của nhóm.</li>
+                                <li>Kiểm duyệt, rà soát lại toàn bộ bản dịch kịch bản và phụ đề (subtitles) trên video để tránh lỗi chính tả hay đồng bộ lệch thời gian.</li>
                             </ul>
                         </div>
 
-                        <div class="space-y-2">
-                            <span class="text-white font-mono block uppercase font-bold text-[10px] text-cyberneon">// Hệ sinh thái công cụ số của Nhóm:</span>
-                            <ul class="list-decimal list-inside space-y-1.5 text-[11px]">
-                                <li><strong>Notion:</strong> Quản lý toàn bộ tiến trình công việc cá nhân và cả nhóm. Thiết kế dưới dạng Database với đầy đủ thuộc tính quản trị: Status (To Do, In Progress, Done), Deadline, và Người phụ trách rõ ràng.</li>
-                                <li><strong>Google Docs:</strong> Biên soạn hồ sơ làm việc chung trực tuyến, tận dụng tính năng <em>Version History</em> để kiểm soát mọi lịch sử sửa đổi, phục hồi phiên bản khi cần thiết.</li>
-                                <li><strong>Google Drive:</strong> Lưu trữ tập trung toàn bộ tài nguyên học liệu số, phân chia thư mục khoa học, chống thất lạc thông tin.</li>
-                                <li><strong>Google Meet:</strong> Không gian họp trực tuyến thảo luận chốt ý tưởng, báo cáo tiến độ định kỳ ít nhất 3 lần/tuần để đảm bảo tính kỷ luật.</li>
-                            </ul>
+                        <div class="space-y-3">
+                            <span class="text-white font-mono block uppercase font-bold text-[10px] text-cyberneon">// Ứng dụng hệ thống công cụ số để hợp tác và tối ưu hóa quy trình:</span>
+                            
+                            <div class="space-y-2 pl-2 border-l border-bordercolor">
+                                <p><strong>1. Quản lý tác vụ với Notion:</strong> Xây dựng cơ sở dữ liệu (Database) chung cho nhóm 32. Tối ưu hóa không gian làm việc số bằng việc cấu hình đầy đủ các thuộc tính (Properties) quản trị dự án, bao gồm: <em>Status (To Do, In Progress, Done)</em>, <em>Deadline (Hạn hoàn thành)</em>, và <em>Người phụ trách (Assignee)</em>. Cập nhật tiến độ ít nhất 3 lần một tuần để tránh bỏ sót đầu việc.</p>
+                                <p><strong>2. Google Docs & Tính năng Version History:</strong> Sử dụng làm tài liệu viết kịch bản, hồ sơ phân công real-time. Tận dụng triệt để tính năng lịch sử phiên bản để dễ dàng đối chiếu đóng góp của từng thành viên, theo dõi lịch sử chỉnh sửa kịch bản rõ ràng và phục hồi phiên bản cũ nhanh chóng khi gặp lỗi dữ liệu.</p>
+                                <p><strong>3. Quản lý tài nguyên trên Google Drive:</strong> Thiết lập một Google Drive chung cho nhóm. Tất cả học liệu, tệp tin canva, video nháp, âm thanh không bản quyền đều được phân loại khoa học vào các thư mục riêng giúp tiết kiệm tối đa thời gian tìm kiếm tài nguyên của nhóm.</p>
+                                <p><strong>4. Google Meet kết nối trực tuyến:</strong> Tổ chức các cuộc họp trực tiếp hàng tuần để thảo luận nội dung video, thống nhất phân công công việc, hỗ trợ kịp thời các thành viên khi gặp khó khăn, nâng cao kỹ năng làm việc nhóm trực tuyến hiệu quả.</p>
+                            </div>
                         </div>
                     </div>
                 `,
                 interactive: `
-                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// KANBAN BOARD QUẢN LÝ DỰ ÁN NHÓM //</span>
+                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// KANBAN BOARD DỰ ÁN NHÓM 32 //</span>
                     <div class="bg-neutral-900 border border-bordercolor p-4 rounded font-mono text-[10px] space-y-3">
                         <div class="grid grid-cols-3 gap-2 text-center text-white">
-                            <div class="p-2 bg-neutral-950 border border-bordercolor">
-                                <span class="text-red-400 font-bold block">// TO DO</span>
-                                <div class="mt-2 p-1.5 bg-cardbg border border-bordercolor cursor-pointer text-left hover:border-cyberneon" onclick="viewTaskNotion('review')">Kế hoạch Video</div>
+                            <div class="p-2 bg-neutral-950 border border-bordercolor rounded">
+                                <span class="text-red-400 font-bold block mb-2">// TO DO</span>
+                                <div class="p-2 bg-cardbg border border-bordercolor rounded cursor-pointer text-left hover:border-cyberneon" onclick="viewTaskNotion('review')">Kịch bản Video</div>
                             </div>
-                            <div class="p-2 bg-neutral-950 border border-bordercolor">
-                                <span class="text-yellow-400 font-bold block">// IN PROGRESS</span>
-                                <div class="mt-2 p-1.5 bg-cardbg border border-bordercolor cursor-pointer text-left hover:border-cyberneon" onclick="viewTaskNotion('canva')">Canva Slide (Linh)</div>
+                            <div class="p-2 bg-neutral-950 border border-bordercolor rounded">
+                                <span class="text-yellow-400 font-bold block mb-2">// IN PROGRESS</span>
+                                <div class="p-2 bg-cardbg border border-bordercolor rounded cursor-pointer text-left hover:border-cyberneon mb-1.5" onclick="viewTaskNotion('canva')">Canva Slide (Linh)</div>
+                                <div class="p-2 bg-cardbg border border-bordercolor rounded cursor-pointer text-left hover:border-cyberneon" onclick="viewTaskNotion('thumbnail')">Thumbnail (Linh)</div>
                             </div>
-                            <div class="p-2 bg-neutral-950 border border-bordercolor">
-                                <span class="text-green-400 font-bold block">// DONE</span>
-                                <div class="mt-2 p-1.5 bg-cardbg border border-bordercolor cursor-pointer text-left hover:border-cyberneon" onclick="viewTaskNotion('done')">Họp Meet chốt bài</div>
+                            <div class="p-2 bg-neutral-950 border border-bordercolor rounded">
+                                <span class="text-green-400 font-bold block mb-2">// DONE</span>
+                                <div class="p-2 bg-cardbg border border-bordercolor rounded cursor-pointer text-left hover:border-cyberneon mb-1.5" onclick="viewTaskNotion('sub')">Check Phụ đề (Linh)</div>
+                                <div class="p-2 bg-cardbg border border-bordercolor rounded cursor-pointer text-left hover:border-cyberneon" onclick="viewTaskNotion('done')">Họp nhóm Google Meet</div>
                             </div>
                         </div>
-                        <div class="bg-black p-2 border border-bordercolor min-h-[50px] text-gray-400" id="notion-task-desc">
-                            Bấm chọn các task trên bảng để xem chi tiết quản lý...
+                        <div class="bg-black p-3 border border-bordercolor min-h-[70px] text-gray-400 rounded" id="notion-task-desc">
+                            Bấm chọn các task trên bảng Kanban Notion giả lập để xem chi tiết thông tin quản trị dự án...
                         </div>
                     </div>
                 `
@@ -726,39 +851,70 @@
                 report: `
                     <div class="bg-black/50 border border-bordercolor p-4 space-y-1">
                         <span class="text-white font-mono block uppercase font-bold text-xs text-cyberneon">// MỤC TIÊU CỐT LÕI:</span>
-                        <p class="text-xs text-gray-300">Tận dụng sức mạnh của AI tạo sinh để đẩy nhanh quá trình sáng tạo học liệu ngoại ngữ chất lượng cao, cá nhân hóa lộ trình học.</p>
+                        <p class="text-xs text-gray-300 font-jakarta">Ứng dụng có mục đích và có kiểm duyệt các công cụ AI tạo sinh phổ biến hiện nay như ChatGPT và Google Gemini để tối ưu hóa quá trình thiết kế, sáng tạo các tài liệu học tiếng Hàn.</p>
                     </div>
                     <div class="space-y-3 font-jakarta text-xs text-gray-300 max-h-[300px] overflow-y-auto pr-2 leading-relaxed">
-                        <span class="text-white font-mono block uppercase font-bold text-xs">// THỰC HÀNH TẠO HỌC LIỆU VỚI CHATGPT & GEMINI:</span>
-                        <p>Ứng dụng học ngữ pháp tiếng Hàn trình độ <strong class="text-white">TOPIK 2</strong>:</p>
+                        <span class="text-white font-mono block uppercase font-bold text-xs">// KHẢ NĂNG SÁNG TẠO HỌC LIỆU CỦA CHATGPT & GEMINI CHI TIẾT:</span>
+                        <p>Đề tài thiết kế: <strong class="text-white">"Ứng dụng của AI trong việc học ngữ pháp tiếng Hàn"</strong> (Trình độ TOPIK 2).</p>
                         
                         <div class="space-y-3">
+                            <!-- Ứng dụng 1 -->
                             <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1.5">
-                                <strong class="text-cyberneon text-[11px] block font-mono">// Ứng dụng 1: ChatGPT giải thích ngữ pháp "-(으)ㄹ 수 있다"</strong>
-                                <p class="text-gray-400"><strong>Yêu cầu:</strong> Đóng vai giáo viên tiếng Hàn giải thích đơn giản cho sinh viên TOPIK 2.</p>
-                                <p class="text-white"><strong>Kết quả đầu ra:</strong> ChatGPT phân tích rõ cấu trúc gồm ý nghĩa (Khả năng, năng lực) và điều kiện cơ hội để làm việc gì đó. Trực quan hóa cấu trúc động từ có patchim (먹다 -> 먹을 수 있다), động từ không có patchim (가da -> 갈 수 있다), và động từ kết thúc bằng ㄹ (만들다 -> 만들 수 있다). Giúp người học tiếp thu bài học dễ dàng và trơn tru.</p>
+                                <strong class="text-cyberneon text-[11px] block font-mono">// Ứng dụng 1: ChatGPT phân tích ngữ pháp \"-(으)ㄹ 수 있다\" (TOPIK 2)</strong>
+                                <p class="text-gray-400"><strong>Yêu cầu câu lệnh:</strong> Đóng vai trò là giáo viên tiếng Hàn, giải thích cấu trúc ngữ pháp có hệ thống kèm ví dụ cụ thể dễ hiểu cho người học TOPIK 2.</p>
+                                <div class="pl-2 border-l border-cyberneon text-[11px] text-gray-300 space-y-1">
+                                    <p><strong>• Bản dịch chi tiết cấu trúc:</strong> Biểu đạt ý nghĩa <strong class="text-white">Khả năng</strong> (Tôi có thể làm việc này) hoặc <strong class="text-white">Điều kiện / Cơ hội</strong> (Bối cảnh cho phép thực hiện).</p>
+                                    <p><strong>• Cụ thể hóa chia động từ:</strong></p>
+                                    <ul class="list-disc list-inside ml-2">
+                                        <li>Động từ có patchim (phụ âm cuối): + <code class="text-cyberneon">을 수 있다</code> (Ví dụ: 먹다 -> 먹을 수 있다 / 읽다 -> 읽을 수 있다).</li>
+                                        <li>Động từ không có patchim: + <code class="text-cyberneon">ㄹ 수 있다</code> (Ví dụ: 가다 -> 갈 수 있다 / 보다 -> 볼 수 있다).</li>
+                                        <li>Động từ kết thúc bằng ㄹ (bỏ ㄹ): + <code class="text-cyberneon">ㄹ 수 있다</code> (Ví dụ: 만들다 -> 만들 수 있다 / 살다 -> 살 수 있다).</li>
+                                    </ul>
+                                    <p><strong>• Ví dụ minh họa từ AI:</strong> \"저는 한국어를 말할 수 있어요.\" (Tôi có thể nói tiếng Hàn).</p>
+                                </div>
                             </div>
 
+                            <!-- Ứng dụng 2 -->
                             <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1.5">
-                                <strong class="text-cyberneon text-[11px] block font-mono">// Ứng dụng 2: Google Gemini thiết kế bộ 5 câu hỏi trắc nghiệm "-아/어 보다"</strong>
-                                <p class="text-gray-400"><strong>Yêu cầu:</strong> Đóng vai giáo viên tiếng Hàn tạo bộ 5 câu hỏi trắc nghiệm có giải thích.</p>
-                                <p class="text-white"><strong>Kết quả đầu ra:</strong> Gemini tạo ra 5 câu hỏi thực tế (Chủ đề ăn uống, du lịch, mua sắm, học tập, đời sống hàng ngày). Mỗi câu hỏi có 4 phương án lựa chọn, chỉ rõ đáp án đúng và phân tích lý do chọn cấu trúc một cách cực kỳ cặn kẽ và ngắn gọn.</p>
+                                <strong class="text-cyberneon text-[11px] block font-mono">// Ứng dụng 2: Google Gemini thiết kế 5 câu hỏi trắc nghiệm ngữ pháp \"-아/어 보다\"</strong>
+                                <p class="text-gray-400"><strong>Yêu cầu câu lệnh:</strong> Đóng vai trò giáo viên tiếng Hàn và tạo 5 câu trắc nghiệm luyện tập ngữ pháp biểu thị ý nghĩa 'thử làm việc gì đó', mỗi câu có 4 đáp án kèm giải thích chi tiết.</p>
+                                <div class="pl-2 border-l border-cyberneon text-[11px] text-gray-300 space-y-1">
+                                    <p>Gemini đã tạo lập thành công 5 câu hỏi lồng ghép vào các tình huống thực tiễn sinh động:</p>
+                                    <ul class="list-decimal list-inside ml-2">
+                                        <li><strong>Câu 1 (Ăn uống):</strong> 한국에 가면 비빔밥을 꼭 (먹어 보세요).</li>
+                                        <li><strong>Câu 2 (Du lịch):</strong> 저는 작년에 제주도에 (가 봤어요).</li>
+                                        <li><strong>Câu 3 (Mua sắm):</strong> 이 신발이 아주 예쁜데 한번 (신어 볼까요)?</li>
+                                        <li><strong>Câu 4 (Học tập):</strong> 한국어 발음이 어려우면 이 CD를 자주 (들어 보세요).</li>
+                                        <li><strong>Câu 5 (Đời sống hàng ngày):</strong> 태권도를 (해 본) 적이 없어서 한번 배우고 싶어요.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Vai trò kiểm duyệt cá nhân -->
+                            <div class="bg-black/50 p-2 border border-bordercolor rounded text-[11px]">
+                                <span class="text-white font-mono block font-bold uppercase text-[9px] text-cyberneon">// VAI TRÒ KIỂM DUYỆT CÁ NHÂN CỦA DIỆU LINH:</span>
+                                AI hỗ trợ tìm kiếm ý tưởng ban đầu cực tốt, tuy nhiên một số câu hỏi của Gemini vẫn còn rập khuôn và chưa phản ánh hoàn toàn văn phong giao tiếp thực tế tự nhiên của người bản xứ. Bản thân mình đã tự tay chọn lọc, tinh chỉnh, viết lại nội dung theo phong cách riêng và hoàn thiện thiết kế slide để tối ưu học liệu tốt nhất.
                             </div>
                         </div>
                     </div>
                 `,
                 interactive: `
-                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// TRẮC NGHIỆM TIẾNG HÀN TẠO BỞI AI //</span>
-                    <div class="bg-neutral-900 border border-bordercolor p-4 rounded font-mono text-[10px] space-y-3">
-                        <span class="text-white font-bold block">Câu hỏi: 한국에 가면 비빔밥을 꼭 ( &nbsp;&nbsp; ).</span>
-                        <div class="flex flex-col gap-1.5 text-[9px]">
-                            <button onclick="checkAnswer('A')" class="p-2 bg-cardbg border border-bordercolor hover:border-cyberneon text-left text-white">A. 먹어 보세요 (Hãy ăn thử)</button>
-                            <button onclick="checkAnswer('B')" class="p-2 bg-cardbg border border-bordercolor hover:border-cyberneon text-left text-white">B. 먹었습니다 (Đã ăn)</button>
-                            <button onclick="checkAnswer('C')" class="p-2 bg-cardbg border border-bordercolor hover:border-cyberneon text-left text-white">C. 먹으러 가십시오 (Hãy đi ăn)</button>
+                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// TRÒ CHƠI ÔN LUYỆN NGỮ PHÁP TOPIK 2 //</span>
+                    <div class="bg-neutral-900 border border-bordercolor p-4 rounded font-mono text-xs space-y-3">
+                        <div class="flex justify-between items-center text-[10px] text-gray-500">
+                            <span id="quiz-progress">Câu hỏi 1/5</span>
+                            <span id="quiz-score" class="text-cyberneon font-bold">Điểm: 0/5</span>
                         </div>
-                        <div class="bg-black p-2 border border-bordercolor min-h-[40px] text-gray-400" id="quiz-feedback">
-                            Chọn đáp án để xem giải thích chi tiết từ Gemini...
+                        <div class="bg-black p-3 border border-bordercolor rounded min-h-[60px]" id="quiz-question-box">
+                            <!-- Populated by JS -->
                         </div>
+                        <div class="flex flex-col gap-1.5" id="quiz-options-box">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="bg-black p-2 border border-bordercolor min-h-[40px] text-[10px] text-gray-400 rounded" id="quiz-explanation-box">
+                            Chọn đáp án để xem giải thích chi tiết ngữ pháp...
+                        </div>
+                        <button onclick="nextQuizQuestion()" id="quiz-next-btn" class="hidden w-full py-2 bg-cyberneon text-black font-bold uppercase text-[10px] tracking-wider rounded">Câu tiếp theo</button>
                     </div>
                 `
             },
@@ -769,52 +925,62 @@
                 report: `
                     <div class="bg-black/50 border border-bordercolor p-4 space-y-1">
                         <span class="text-white font-mono block uppercase font-bold text-xs text-cyberneon">// MỤC TIÊU CỐT LÕI:</span>
-                        <p class="text-xs text-gray-300">Định vị và thiết lập ranh giới đạo đức, liêm chính học thuật khi tích hợp các công cụ AI thế hệ mới vào nghiên cứu và học tập cá nhân.</p>
+                        <p class="text-xs text-gray-300 font-jakarta">Nghiên cứu sâu sắc các quy chuẩn, hướng dẫn đạo đức của trường Đại học Ngoại Ngữ - ĐHQGHN để xây dựng bộ nguyên tắc học tập có trách nhiệm khi làm việc cùng các mô hình trí tuệ nhân tạo.</p>
                     </div>
                     <div class="space-y-3 font-jakarta text-xs text-gray-300 max-h-[300px] overflow-y-auto pr-2 leading-relaxed">
-                        <span class="text-white font-mono block uppercase font-bold text-xs">// PHÂN TÍCH CHÍNH SÁCH ĐẠO ĐỨC & KHUNG CLEAR:</span>
+                        <span class="text-white font-mono block uppercase font-bold text-xs">// PHÂN TÍCH CHÍNH SÁCH ĐẠO ĐỨC & KHUNG CLEAR CHI TIẾT:</span>
                         
                         <div class="space-y-3">
-                            <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1">
-                                <strong class="text-cyberneon text-[11px] block font-mono">// 1. Khung chính sách của ULIS:</strong>
-                                <p>Định hướng xem AI là <strong class="text-white">"đối tác tư duy"</strong> chứ không phải công cụ làm thay con người. Sinh viên bắt buộc tuân thủ <strong class="text-cyberneon">quy tắc 3C (Clarity, Control, Critical Thinking)</strong>.</p>
-                                <ul class="list-disc list-inside text-gray-400 text-[10px] space-y-1 ml-1">
-                                    <li><strong>Tính minh bạch:</strong> Phải ghi nguồn rõ ràng nếu dùng AI để dịch thuật hay lên ý tưởng.</li>
-                                    <li><strong>Liêm chính học thuật:</strong> Mọi bài tập lớn đều kiểm tra qua Turnitin hoặc DoIt để kiểm soát gian lận.</li>
+                            <!-- 1. Khung chính sách ULIS -->
+                            <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1.5">
+                                <strong class="text-cyberneon text-[11px] block font-mono">// 1. Nghiên cứu chính sách học thuật Đại học Ngoại Ngữ - ĐHQGHN:</strong>
+                                <p>Trong bối cảnh AI được ứng dụng rộng rãi, trường Đại học Ngoại ngữ (ULIS) định hướng rõ ràng AI là <strong class="text-white">"đối tác tư duy" (Cognitive Partner)</strong> để hỗ trợ, thúc đẩy sự phát triển cá nhân của người học chứ không phải công cụ để thay thế con người.</p>
+                                <p>Sinh viên khi học tập trực tuyến hay trực tiếp đều phải tuân thủ nghiêm ngặt <strong class="text-cyberneon">Quy tắc 3C</strong>:</p>
+                                <ul class="list-disc list-inside space-y-1 text-gray-400 text-[10px] ml-1">
+                                    <li><strong>Clarity (Rõ ràng):</strong> Minh bạch hoàn toàn trong việc khai báo nguồn lực. Nếu dùng AI dịch thuật hay tạo ý tưởng bắt buộc phải ghi nguồn rõ ràng, không được sao chép nguyên văn để nhận làm của mình.</li>
+                                    <li><strong>Control (Kiểm soát):</strong> Sinh viên chịu trách nhiệm kiểm tra tính đúng đắn của thông tin do AI đưa ra, tránh sai lệch kiến thức.</li>
+                                    <li><strong>Critical Thinking (Tư duy phản biện):</strong> Đặt câu hỏi, phản biện và chọn lọc đầu ra của AI, duy trì tính nguyên bản trong bài viết.</li>
+                                </ul>
+                                <p class="text-gray-400">Các bài tập lớn, tiểu luận, khóa luận đều được rà duyệt chặt chẽ thông qua phần mềm kiểm tra đạo văn chuyên nghiệp như <strong class="text-white">Turnitin</strong> hoặc <strong class="text-white">DoIt</strong> để kiểm soát tối đa các hành vi lạm dụng gian lận học thuật.</p>
+                            </div>
+
+                            <!-- 2. Thực hành viết Prompt CLEAR -->
+                            <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1.5">
+                                <strong class="text-white text-[11px] block font-mono">// 2. Thực hành thiết lập Prompt CLEAR của Nguyễn Diệu Linh:</strong>
+                                <p><strong>Câu lệnh CLEAR mẫu áp dụng:</strong> "Tôi là sinh viên đang chuẩn bị bài thuyết trình về 'Sử dụng AI có trách nhiệm trong học thuật'. Hãy đóng vai một chuyên gia giáo dục đại học, đề xuất một dàn ý chi tiết gồm 6-7 slide với nội dung ngắn gọn, dễ trình bày gói gọn trong 5 phút."</p>
+                                <p class="text-gray-400"><strong>Dàn ý 7 slide hoàn thiện do AI đề xuất:</strong></p>
+                                <ul class="list-decimal list-inside space-y-1 text-gray-400 text-[10px] ml-1">
+                                    <li><strong>Slide 1 (Tiêu đề):</strong> Sử dụng AI có trách nhiệm trong học thuật.</li>
+                                    <li><strong>Slide 2:</strong> AI đồng hành và hỗ trợ học thuật thế nào (Tìm kiếm, dịch thuật, gợi ý kịch bản).</li>
+                                    <li><strong>Slide 3:</strong> Trách nhiệm của sinh viên (Nguyên tắc tự học, kiểm soát bài tập).</li>
+                                    <li><strong>Slide 4:</strong> Rủi ro học thuật khi lạm dụng AI (Mất kỹ năng độc lập, sai lệch dữ liệu).</li>
+                                    <li><strong>Slide 5:</strong> Nguyên tắc vàng sử dụng AI (Tính minh bạch, đối chiếu đa nguồn học thuật).</li>
+                                    <li><strong>Slide 6:</strong> Tổng kết, kết luận bài học.</li>
+                                    <li><strong>Slide 7:</strong> Lời chúc, cảm ơn thầy cô và bạn học lắng nghe.</li>
                                 </ul>
                             </div>
 
+                            <!-- 3. Ranh giới đạo đức học thuật -->
                             <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1">
-                                <strong class="text-white text-[11px] block font-mono">// 2. Thực hành viết Prompt theo mô hình CLEAR:</strong>
-                                <p><strong>Prompt mẫu:</strong> "Tôi là sinh viên đang chuẩn bị bài thuyết trình về 'Sử dụng AI có trách nhiệm trong học thuật'. Hãy xây dựng dàn ý gồm 6-7 slide với nội dung ngắn gọn, dễ trình bày trong 5 phút."</p>
-                                <p class="text-gray-400"><strong>Kết quả đầu ra:</strong> ChatGPT định hình cấu trúc 7 slide chặt chẽ từ Giới thiệu, Cách AI hỗ trợ, Trách nhiệm của sinh viên, Rủi ro, Nguyên tắc sử dụng, Kết luận và Lời kết.</p>
-                            </div>
-
-                            <div class="border border-bordercolor p-3 bg-black/40 rounded space-y-1">
-                                <strong class="text-cyberneon text-[11px] block font-mono">// 3. Bài học về quyền sở hữu trí tuệ:</strong>
-                                <p class="text-gray-400">Sinh viên cần chịu trách nhiệm hoàn toàn về độ chính xác và tính trung thực của bài làm cuối cùng. Sự lạm dụng quá đà sẽ làm thui chột năng lực độc lập và tư duy phản biện của bản thân.</p>
+                                <strong class="text-cyberneon text-[11px] block font-mono">// 3. Nhận định sâu sắc về ranh giới đạo đức khoa học:</strong>
+                                <p class="text-gray-400">Ranh giới giữa sự hỗ trợ hợp lý và gian lận học thuật là vô cùng mong manh. Việc lạm dụng AI chép nguyên văn đáp án sẽ vô tình cướp đi cơ hội tư duy phản biện, kỹ năng viết luận, và năng lực giải quyết vấn đề độc lập của sinh viên. Bản thân mỗi người học cần luôn tỉnh táo, làm chủ công nghệ thay vì để công nghệ làm chủ suy nghĩ.</p>
                             </div>
                         </div>
                     </div>
                 `,
                 interactive: `
-                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// MẪU XÂY DỰNG PROMPT KHUNG CLEAR //</span>
-                    <div class="bg-neutral-900 border border-bordercolor p-4 rounded font-mono text-[9px] space-y-3">
-                        <div class="space-y-1">
-                            <span class="text-gray-400">[C] - Context (Bối cảnh):</span>
-                            <div class="p-1 bg-black text-white">"Tôi là sinh viên khoa tiếng Hàn ULIS"</div>
+                    <span class="font-mono text-xs text-cyberneon font-bold block mb-2">// MÔ PHỎNG DÀN Ý SLIDE ĐẠO ĐỨC AI //</span>
+                    <div class="bg-neutral-900 border border-bordercolor p-4 rounded font-mono text-xs space-y-3">
+                        <div class="flex justify-between items-center text-[10px] text-gray-500">
+                            <span id="slide-index">Slide 1 / 7</span>
+                            <span class="text-cyberneon font-bold">// 3C COMPLIANT</span>
                         </div>
-                        <div class="space-y-1">
-                            <span class="text-gray-400">[L] - Limit (Giới hạn):</span>
-                            <div class="p-1 bg-black text-white">"Nội dung gọn nhẹ, trình bày trong vòng 5 phút"</div>
+                        <div class="bg-black p-4 border border-bordercolor rounded min-h-[150px] flex flex-col justify-between" id="slide-viewer-box">
+                            <!-- Populated by JS -->
                         </div>
-                        <div class="space-y-1">
-                            <span class="text-gray-400">[E] - Execute (Nhiệm vụ):</span>
-                            <div class="p-1 bg-black text-white">"Xây dựng dàn ý thuyết trình Sử dụng AI trách nhiệm"</div>
-                        </div>
-                        <button onclick="executeClearPrompt()" class="w-full py-1.5 bg-cyberneon text-black font-bold uppercase text-[10px] tracking-wider">Xem dàn ý 7 slide</button>
-                        <div class="bg-black p-2 border border-bordercolor max-h-[80px] overflow-y-auto text-gray-400" id="clear-output">
-                            Bấm nút để chạy thử và kiểm duyệt dàn ý do AI lên khung...
+                        <div class="flex gap-2 justify-between">
+                            <button onclick="prevSlideDeck()" class="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-[10px] uppercase font-bold text-white rounded">Trở về</button>
+                            <button onclick="nextSlideDeck()" class="px-3 py-1.5 bg-cyberneon hover:bg-white hover:text-black text-[10px] uppercase font-bold text-black rounded">Tiếp theo</button>
                         </div>
                     </div>
                 `
@@ -852,14 +1018,14 @@
             const interactiveArea = document.getElementById('task-interactive-area');
 
             if (tab === 'report') {
-                reportBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
-                interactiveBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
+                reportBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam text-xs";
+                interactiveBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam text-xs";
                 reportArea.classList.remove('hidden');
                 interactiveArea.classList.add('hidden');
                 renderReportContent();
             } else {
-                interactiveBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
-                reportBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam";
+                interactiveBtn.className = "px-4 py-2 border-b-2 border-cyberneon text-cyberneon font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam text-xs";
+                reportBtn.className = "px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-white font-bold tracking-wider uppercase transition-all duration-300 font-bevietnam text-xs";
                 interactiveArea.classList.remove('hidden');
                 reportArea.classList.add('hidden');
                 renderInteractiveContent();
@@ -913,6 +1079,10 @@
                         searchArticles(); // populate list
                     } else if (currentTaskId === 3) {
                         runPromptTester(); // trigger initial state
+                    } else if (currentTaskId === 5) {
+                        initQuizGame();
+                    } else if (currentTaskId === 6) {
+                        initSlideDeck();
                     }
                     initCursorHover();
                 }
@@ -1014,72 +1184,280 @@
 
         // Task 3: Interactive Prompt Level Simulation
         const promptsDatabase = {
-            basic: {
-                prompt: "> giải thích blockchain",
-                response: "AI: Blockchain là hệ thống cơ sở dữ liệu phân tán lưu trữ dưới dạng các khối được liên kết bằng mã hóa. Mỗi khối chứa mã băm của khối trước, nhãn thời gian và dữ liệu giao dịch..."
+            unicef: {
+                basic: {
+                    prompt: "Tóm tắt bài viết này",
+                    response: "AI: Bài viết đề cập đến việc mạng xã hội ảnh hưởng xấu đến sức khỏe tâm thần trẻ em. Nó tạo ra sự so sánh ảo và gây trầm cảm cho các bạn học sinh...",
+                    score: "30%"
+                },
+                improved: {
+                    prompt: "Hãy tóm tắt bài viết dưới đây trong khoảng 150 từ và nêu 3 tác động chính của mạng xã hội đến sức khỏe tâm thần của thanh thiếu niên.",
+                    response: "AI: Bài viết phân tích mối liên hệ mật thiết giữa MXH và tâm thần học của giới trẻ. Có 3 tác động cốt lõi: 1. Gây ra áp lực đồng trang lứa và sự thiếu tự tin, 2. Gây rối loạn chu kỳ giấc ngủ nghiêm trọng, 3. Cyberbullying (bắt nạt qua mạng). Đóng vai trò cảnh tỉnh giáo viên và phụ huynh cần có giải pháp.",
+                    score: "65%"
+                },
+                advanced: {
+                    prompt: "Hãy đóng vai một giảng viên tâm lý học giáo dục và tóm tắt bài báo dưới đây cho sinh viên năm nhất. Yêu cầu: Giải thích bằng ngôn ngữ dễ hiểu, giữ các thuật ngữ cốt lõi (ví dụ passive scrolling, cyberbullying), trình bày dưới dạng gạch đầu dòng, kết thúc bằng 3 ý chính cần ghi nhớ.",
+                    response: "AI (Giảng viên Tâm lý): Chào các em tân sinh viên! Bài báo học thuật này phân tích rõ nét tác động tâm sinh lý của môi trường số. Cụ thể có các khối kiến thức chính:\\n- <strong>Passive Scrolling (Lướt thụ động):</strong> Gây tâm lý tự ti và so sánh xã hội vô hình.\\n- <strong>Cyberbullying (Bắt nạt mạng):</strong> Tác nhân hàng đầu kích hoạt rối loạn trầm cảm của giới trẻ.\\n- <strong>Biện pháp:</strong> Cân đối thời gian số học và tương tác thực tiễn.\\n\\n<strong>3 Ý chính cần nhớ:</strong>\\n1. Kiểm soát thời gian tiếp xúc màn hình khoa học.\\n2. Luôn chủ động xây dựng mạng lưới hỗ trợ gia đình/bạn bè thực tế.\\n3. Nhận định đúng bản chất ảo của thông tin MXH.",
+                    score: "98%"
+                }
             },
-            improved: {
-                prompt: "> Hãy giải thích blockchain cho học sinh THPT không học kỹ thuật.",
-                response: "AI: Hãy tưởng tượng blockchain như một chuỗi các khối hộp đồ chơi, mỗi hộp chứa một tờ giấy ghi chép giao dịch. Khi hộp được khóa lại bằng một ổ khóa đặc biệt, không ai có thể thay đổi tờ giấy bên trong..."
+            blockchain: {
+                basic: {
+                    prompt: "giải thích blockchain",
+                    response: "AI: Blockchain là một hệ thống mật mã học phân tán sử dụng thuật toán SHA-256 để liên kết các block dữ liệu. Mỗi khối ghi nhận mã băm, bằng chứng công việc (proof-of-work) và mã Merkle tree bảo mật...",
+                    score: "25%"
+                },
+                improved: {
+                    prompt: "Hãy giải thích blockchain cho học sinh THPT chưa có kiến thức công nghệ. Sử dụng ví dụ thực tế và tránh thuật ngữ phức tạp.",
+                    response: "AI: Blockchain giống như một chuỗi các thùng đồ chơi được khóa kín. Mỗi thùng chứa một mẩu giấy ghi chép giao dịch tiền tệ của các bạn trong lớp. Khi thùng đã khóa, không ai tự ý cạy hay sửa thông tin bên trong được...",
+                    score: "60%"
+                },
+                advanced: {
+                    prompt: "Hãy đóng vai giáo viên công nghệ thông tin và giải thích blockchain bằng phép so sánh với một cuốn sổ ghi chép công khai mà mọi người đều có thể xem nhưng không ai có thể tự ý sửa đổi. Trình bày 5 bước rõ ràng và có ví dụ.",
+                    response: "AI (Thầy giáo CNTT): Chào các em học sinh! Hãy tưởng tượng Blockchain là một 'Cuốn sổ ghi chép chung của lớp ta'.\\n1. <strong>Tính phi tập trung:</strong> Thầy không giữ sổ, cả 40 bạn trong lớp mỗi người giữ 1 cuốn sổ copy y hệt nhau.\\n2. <strong>Ví dụ:</strong> Bạn A chuyển cho bạn B 10k, cả lớp cùng ghi chép.\\n3. <strong>Không thể sửa đổi:</strong> Bạn C âm mưu tự sửa sổ của mình để tăng tiền. Khi đối chiếu với 39 cuốn sổ còn lại, sổ bạn C bị phát hiện gian lận lập tức.\\n4. <strong>Khối (Block):</strong> Các trang sổ được đóng tập và găm chặt vào nhau.\\n5. <strong>Hạn chế:</strong> Tốn nhiều công sức để cả lớp cùng đồng loạt ghi chép.",
+                    score: "95%"
+                }
             },
-            advanced: {
-                prompt: "> Đóng vai giáo viên, hãy giải thích blockchain thông qua hình ảnh một cuốn sổ ghi chép công khai của lớp học...",
-                response: "AI: Chào các em! Hãy nghĩ về Blockchain như một 'Cuốn sổ điểm công khai' của lớp ta. Mỗi khi có điểm mới, thầy sẽ thông báo và toàn bộ 40 bạn trong lớp cùng chép vào sổ riêng của mình. Nếu có ai đó cố tình sửa điểm của mình, 39 cuốn sổ còn lại sẽ ngay lập tức đối chiếu và từ chối sửa đổi đó. Đó chính là sự bảo mật phi tập trung của Blockchain!"
+            topik: {
+                basic: {
+                    prompt: "tạo câu hỏi ôn tập tiếng Hàn",
+                    response: "AI: Câu hỏi: Bạn thích ăn gì?\\nA. Kimchi\\nB. Bánh mì\\nC. Phở\\nD. Gà rán",
+                    score: "20%"
+                },
+                improved: {
+                    prompt: "Hãy tạo 5 câu trắc nghiệm ngữ pháp tiếng Hàn trình độ TOPIK 2 cho cấu trúc '-아/어 보다'",
+                    response: "AI: Câu 1: 한국 음식을 ( &nbsp;&nbsp; ) 싶어요.\\nA. 먹어 보고\\nB. 먹어 보면\\nC. 먹어 보고\\nD. 먹어 봐서\\nĐáp án đúng: C.",
+                    score: "55%"
+                },
+                advanced: {
+                    prompt: "Tôi là người học tiếng Hàn ở trình độ TOPIK 2. Hãy đóng vai trò là giáo viên tiếng Hàn và tạo 5 câu trắc nghiệm luyện tập ngữ pháp '-아/어 보다'. Mỗi câu có 4 đáp án, kèm đáp án đúng và giải thích ngắn gọn.",
+                    response: "AI (Giáo viên tiếng Hàn): Chào các em! Dưới đây là học liệu ôn tập ngữ pháp chuyên sâu:\\nCâu hỏi: 한국에 가면 비빔밥을 꼭 ( &nbsp;&nbsp; ).\\nA. 먹어 보세요\\nB. 먹었습니다\\nC. 먹으러 가십시오\\nD. 먹으면 안 됩니다\\n\\n<strong>Đáp án:</strong> A. 먹어 보세요 (Hãy ăn thử).\\n<strong>Giải thích:</strong> Cấu trúc '-아/어 보다' (thử làm gì) chia cùng động từ '먹다' thành '먹어 보다', kết hợp đuôi khuyên bảo nhẹ nhàng '-세요' để khuyên người đối diện nên ăn thử Bibimbap khi đến Hàn Quốc.",
+                    score: "95%"
+                }
             }
         };
         function runPromptTester() {
-            const selected = document.getElementById('prompt-level-select').value;
-            const outputBox = document.getElementById('prompt-output-text');
-            const data = promptsDatabase[selected];
+            const selectedTask = document.getElementById('task-scen-select').value;
+            const selectedLvl = document.getElementById('prompt-lvl-select').value;
+            const outputBox = document.getElementById('prompt-sim-output');
+            const scoreLabel = document.getElementById('prompt-metric-score');
+            const scoreBar = document.getElementById('prompt-metric-bar');
+            
+            const data = promptsDatabase[selectedTask][selectedLvl];
 
             outputBox.innerHTML = `
                 <span class="text-cyberneon block font-bold">${data.prompt}</span>
-                <span class="text-gray-400 mt-2 block">${data.response}</span>
+                <span class="text-gray-400 mt-2 block whitespace-pre-line">${data.response}</span>
             `;
+            scoreLabel.innerText = data.score;
+            scoreBar.style.width = data.score;
         }
 
         // Task 4: Notion Board interaction
         const notionData = {
-            review: "Trạng thái: TO DO // Deadline: 31/5/2026 // Vai trò của Linh: Thu thập kịch bản, họp Meet đóng góp phân công nhiệm vụ.",
-            canva: "Trạng thái: IN PROGRESS // Deadline: 12/6/2026 // Vai trò của Linh: Thiết kế infographic lợi ích/thách thức, tạo thumbnail bắt mắt cho video nhóm.",
-            done: "Trạng thái: DONE // Deadline: 15/6/2026 // Vai trò của Linh: Cùng cả nhóm rà soát bản nháp phụ đề tiếng Hàn - tiếng Việt lần cuối trên Google Meet."
+            review: "Trạng thái: TO DO // Deadline: 31/5/2026 // Vai trò của Linh: Đồng biên tập nội dung, phân công công việc qua Google Docs và lập kế hoạch sản xuất video kịch bản chung.",
+            canva: "Trạng thái: IN PROGRESS // Deadline: 12/6/2026 // Vai trò của Linh: Thiết kế slide thuyết trình Canva phân tích chi tiết toàn diện các mặt thuận lợi, khó khăn, ứng dụng thực chiến của AI trong ngoại ngữ.",
+            thumbnail: "Trạng thái: IN PROGRESS // Deadline: 12/6/2026 // Vai trò của Linh: Thiết kế đồ họa Thumbnail kích thích nhấp chuột cho video học thuật nhóm để xuất bản lên Youtube.",
+            sub: "Trạng thái: DONE // Deadline: 15/6/2026 // Vai trò của Linh: Kiểm duyệt toàn bộ nội dung kịch bản và phụ đề tiếng Hàn - tiếng Việt chạy trực tiếp trên CapCut để đảm bảo khớp thời gian 100%.",
+            done: "Trạng thái: DONE // Deadline: 15/6/2026 // Vai trò của Linh: Họp nhóm tuần 3 lần trên Google Meet để cập nhật tiến độ công việc trên Notion, bàn giao tài nguyên số lưu trữ trên Drive nhóm."
         };
         function viewTaskNotion(taskKey) {
             const descBox = document.getElementById('notion-task-desc');
             descBox.innerHTML = `<span class="text-white">${notionData[taskKey]}</span>`;
         }
 
-        // Task 5: Multiple-choice Quiz Game
-        function checkAnswer(option) {
-            const feedback = document.getElementById('quiz-feedback');
-            if (option === 'A') {
-                feedback.innerHTML = `
-                    <span class="text-cyberneon block font-bold">Chính xác! 🎉 (먹어 보세요)</span>
-                    <span class="text-gray-400 block mt-1">Cấu trúc -아/어 보다 kết hợp với đuôi đề nghị, khuyên bảo lịch sự -세요 tạo thành 'hãy ăn thử'. Động từ gốc '먹다' (ăn) chia thành '먹어' kết hợp thành '먹어 보세요'.</span>
+        // Task 5: 5-Question TOPIK 2 Grammar Quiz Game
+        let quizState = {
+            currentIdx: 0,
+            score: 0,
+            answered: false
+        };
+        const quizQuestions = [
+            {
+                question: "한국에 가면 비빔밥을 꼭 ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ).",
+                options: [
+                    { key: "A", text: "먹어 보세요 (Hãy ăn thử)" },
+                    { key: "B", text: "먹었습니다 (Đã ăn)" },
+                    { key: "C", text: "먹고 싶습니다 (Muốn ăn)" },
+                    { key: "D", text: "먹으면 안 됩니다 (Không được ăn)" }
+                ],
+                correct: "A",
+                explanation: "Cấu trúc '-아/어 보다' (thử làm gì) chia cùng động từ '먹다' thành '먹어 보다', kết hợp đuôi đề nghị nhẹ nhàng lịch sự '-세요' để khuyên bảo người nghe nên ăn thử 비빔밥."
+            },
+            {
+                question: "저는 작년에 제주도에 ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ).",
+                options: [
+                    { key: "A", text: "가 봅니다 (Đang đi thử)" },
+                    { key: "B", text: "가 봤어요 (Đã từng đi thử)" },
+                    { key: "C", text: "가겠어요 (Sẽ đi)" },
+                    { key: "D", text: "가고 싶어요 (Muốn đi)" }
+                ],
+                correct: "B",
+                explanation: "Dấu hiệu thời gian '작년에' (năm ngoái) biểu thị hành động xảy ra trong quá khứ. Cấu trúc '-아/어 보다' chuyển sang quá khứ thành '-아/어 봤ta' để diễn tả trải nghiệm đã từng đi du lịch đảo Jeju."
+            },
+            {
+                question: "이 신발이 아주 예쁜데 한번 ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )?",
+                options: [
+                    { key: "A", text: "신어 봅니다 (Đang thử giày)" },
+                    { key: "B", text: "신어 볼까요 (Thử đi xem thế nào nhỉ?)" },
+                    { key: "C", text: "신었습니다 (Đã đi)" },
+                    { key: "D", text: "신으면 됩니다 (Đi là được)" }
+                ],
+                correct: "B",
+                explanation: "Hành động ướm thử giày đi kèm đuôi hỏi gợi ý, rủ rê đối phương cùng làm hoặc hỏi ý kiến '-ㄹ/을까요?' tạo thành '신어 볼까요?' (Tôi đi thử xem sao nhé? hoặc Bạn đi thử xem sao nhé?)."
+            },
+            {
+                question: "한국어 발음이 어려우면 이 CD를 자주 ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ).",
+                options: [
+                    { key: "A", text: "들어 보세요 (Hãy nghe thử xem)" },
+                    { key: "B", text: "듣고 있습니다 (Đang nghe)" },
+                    { key: "C", text: "들었습니다 (Đã nghe)" },
+                    { key: "D", text: "듣지 마십시오 (Xin đừng nghe)" }
+                ],
+                correct: "A",
+                explanation: "Động từ bất quy tắc '듣다' (nghe) kết hợp '-아/어 보다' biến đổi thành '들어 보다' (nghe thử). Sử dụng đuôi '-세요' để khuyên người học nên nghe thử CD luyện phát âm tiếng Hàn."
+            },
+            {
+                question: "태권도를 ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) 적이 없어서 한번 배우고 싶어요.",
+                options: [
+                    { key: "A", text: "해 본 (Từng thử)" },
+                    { key: "B", text: "하는 (Đang làm)" },
+                    { key: "C", text: "하겠는 (Sẽ làm)" },
+                    { key: "D", text: "하지 않는 (Không làm)" }
+                ],
+                correct: "A",
+                explanation: "Cấu trúc diễn tả kinh nghiệm '-ㄴ/은 적이 있다/없다' (đã từng/chưa từng) đi kèm '-아/어 보다' tạo thành vế bổ nghĩa định ngữ quá khứ '해 본 적이 없다' (chưa từng tập thử Taekwondo)."
+            }
+        ];
+
+        function initQuizGame() {
+            quizState.currentIdx = 0;
+            quizState.score = 0;
+            quizState.answered = false;
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const currentQ = quizQuestions[quizState.currentIdx];
+            document.getElementById('quiz-progress').innerText = `Câu hỏi ${quizState.currentIdx + 1} / 5`;
+            document.getElementById('quiz-score').innerText = `Điểm: ${quizState.score} / 5`;
+            document.getElementById('quiz-question-box').innerHTML = `<span class="text-white font-bold leading-relaxed">${currentQ.question}</span>`;
+            document.getElementById('quiz-explanation-box').innerText = "Chọn đáp án để xem giải thích chi tiết ngữ pháp...";
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+            
+            const optionsBox = document.getElementById('quiz-options-box');
+            optionsBox.innerHTML = currentQ.options.map(opt => `
+                <button onclick="handleOptionClick('${opt.key}')" id="quiz-opt-${opt.key}" class="quiz-opt-btn p-2 bg-cardbg border border-bordercolor hover:border-cyberneon text-left text-white transition-all">
+                    ${opt.key}. ${opt.text}
+                </button>
+            `).join('');
+            quizState.answered = false;
+            initCursorHover();
+        }
+
+        function handleOptionClick(selectedKey) {
+            if (quizState.answered) return;
+            quizState.answered = true;
+            
+            const currentQ = quizQuestions[quizState.currentIdx];
+            const explanationBox = document.getElementById('quiz-explanation-box');
+            
+            // Highlight selected option
+            const selectedBtn = document.getElementById(`quiz-opt-${selectedKey}`);
+            
+            if (selectedKey === currentQ.correct) {
+                quizState.score++;
+                selectedBtn.classList.remove('border-bordercolor');
+                selectedBtn.classList.add('border-cyberneon', 'bg-cyberneon/10');
+                explanationBox.innerHTML = `
+                    <span class="text-cyberneon font-bold block mb-1">CHÍNH XÁC! 🎉</span>
+                    <span>${currentQ.explanation}</span>
                 `;
             } else {
-                feedback.innerHTML = `
-                    <span class="text-red-400 block font-bold">Chưa đúng rồi! ❌</span>
-                    <span class="text-gray-400 block mt-1">Gợi ý từ Gemini: Ở vế trước có cấu trúc '한국에 가면...' (Nếu đến Hàn Quốc...), vế sau khuyên bảo nên thử làm điều gì đó (hãy ăn thử). Đáp án A là lựa chọn tự nhiên và chính xác nhất.</span>
+                selectedBtn.classList.remove('border-bordercolor');
+                selectedBtn.classList.add('border-red-500', 'bg-red-500/10');
+                
+                // Highlight correct button
+                const correctBtn = document.getElementById(`quiz-opt-${currentQ.correct}`);
+                correctBtn.classList.add('border-cyberneon', 'bg-cyberneon/10');
+                
+                explanationBox.innerHTML = `
+                    <span class="text-red-400 font-bold block mb-1">CHƯA ĐÚNG RỒI! ❌ (Đáp án đúng: ${currentQ.correct})</span>
+                    <span>${currentQ.explanation}</span>
                 `;
+            }
+
+            document.getElementById('quiz-score').innerText = `Điểm: ${quizState.score} / 5`;
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            if (quizState.currentIdx < 4) {
+                quizState.currentIdx++;
+                renderQuizQuestion();
+            } else {
+                // Quiz completed
+                document.getElementById('quiz-question-box').innerHTML = `
+                    <div class="text-center space-y-2 py-4">
+                        <span class="text-cyberneon font-extrabold text-2xl block">CHÚC MỪNG HOÀN THÀNH!</span>
+                        <p class="text-gray-300">Bạn đã hoàn thành bộ đề trắc nghiệm với số điểm: <strong class="text-white text-lg">${quizState.score} / 5</strong></p>
+                    </div>
+                `;
+                document.getElementById('quiz-options-box').innerHTML = "";
+                document.getElementById('quiz-explanation-box').innerText = "Trò chơi kết thúc. Bấm nút bên dưới để chơi lại.";
+                document.getElementById('quiz-next-btn').innerText = "Chơi lại từ đầu";
+                document.getElementById('quiz-next-btn').onclick = () => {
+                    document.getElementById('quiz-next-btn').innerText = "Câu tiếp theo";
+                    document.getElementById('quiz-next-btn').onclick = nextQuizQuestion;
+                    initQuizGame();
+                };
             }
         }
 
-        // Task 6: CLEAR Prompt Builder
-        function executeClearPrompt() {
-            const output = document.getElementById('clear-output');
-            output.innerHTML = `
-                <div class="space-y-1.5 text-white">
-                    <span class="text-cyberneon font-bold block">// DÀN Ý 7 SLIDE DO AI THIẾT LẬP:</span>
-                    <p><strong>Slide 1:</strong> Tiêu đề bài thuyết trình.</p>
-                    <p><strong>Slide 2:</strong> Cách AI đồng hành và hỗ trợ học thuật (Mindset \"đối tác tư duy\").</p>
-                    <p><strong>Slide 3:</strong> Trách nhiệm thiết yếu của sinh viên khi dùng công nghệ.</p>
-                    <p><strong>Slide 4:</strong> Các rủi ro đạo đức lớn (Đạo văn, lạm dụng).</p>
-                    <p><strong>Slide 5:</strong> Nguyên tắc liêm chính học thuật (Minh bạch nguồn lực).</p>
-                    <p><strong>Slide 6:</strong> Tổng kết, kết luận.</p>
-                    <p><strong>Slide 7:</strong> Lời chào và cảm ơn.</p>
+        // Task 6: CLEAR 7-Slide Deck Presentation
+        let slideDeckState = {
+            currentIdx: 0
+        };
+        const slidesData = [
+            { title: "SLIDE 1: TIÊU ĐỀ", content: "SỬ DỤNG AI CÓ TRÁCH NHIỆM TRONG HỌC THUẬT", desc: "Thuyết trình viên: Nguyễn Diệu Linh - MSSV: 25040282. Khoa Ngôn ngữ và Văn hoá Hàn Quốc, Đại học Ngoại Ngữ - ĐHQGHN." },
+            { title: "SLIDE 2: AI ĐỒNG HÀNH THẾ NÀO?", content: "AI LÀ ĐỐI TÁC TƯ DUY (COGNITIVE PARTNER)", desc: "AI giúp dịch thuật, tóm tắt bài báo dài, giải nghĩa nhanh thuật ngữ phức tạp và khơi nguồn ý tưởng cho cấu trúc bài viết." },
+            { title: "SLIDE 3: TRÁCH NHIỆM CỦA SINH VIÊN", content: "LÀM CHỦ CÔNG NGHỆ VỚI QUY TẮC 3C", desc: "Clarity (Minh bạch ý tưởng, khai báo prompt), Control (Kiểm soát tính đúng đắn), Critical Thinking (Tư duy phản biện chọn lọc thông tin)." },
+            { title: "SLIDE 4: RỦI RO LẠM DỤNG AI", content: "ẢNH HƯỞNG TIÊU CỰC ĐẾN KHẢ NĂNG ĐỘC LẬP", desc: "Gian lận đạo văn dẫn đến thui chột tư duy phản biện, kỹ năng viết luận học thuật và năng lực tự giải quyết vấn đề độc lập của sinh viên." },
+            { title: "SLIDE 5: NGUYÊN TẮC VÀNG", content: "LIÊM CHÍNH KHOA HỌC & ĐẠO ĐỨC HỌC THUẬT", desc: "Luôn kiểm chứng độ chuẩn xác thông tin qua các tài liệu uy tín. Tuân thủ tuyệt đối quy định không đạo văn (Turnitin/DoIt)." },
+            { title: "SLIDE 6: KẾT LUẬN CHUNG", content: "AI LÀ CÔNG CỤ, CON NGƯỜI LÀ CHỦ THỂ", desc: "Không thể thần thánh hóa AI. AI chỉ là trợ lý nâng cao hiệu suất làm việc nếu con người sử dụng nó một cách tỉnh táo và thông thái nhất." },
+            { title: "SLIDE 7: LỜI KẾT", content: "CHÂN THÀNH CẢM ƠN THẦY CÔ VÀ CÁC BẠN", desc: "Hãy trở thành một người sử dụng AI thông minh! Q&A nhận phản hồi." }
+        ];
+
+        function initSlideDeck() {
+            slideDeckState.currentIdx = 0;
+            renderSlideCard();
+        }
+
+        function renderSlideCard() {
+            const currentS = slidesData[slideDeckState.currentIdx];
+            document.getElementById('slide-index').innerText = `Slide ${slideDeckState.currentIdx + 1} / 7`;
+            
+            document.getElementById('slide-viewer-box').innerHTML = `
+                <div class="space-y-1">
+                    <span class="text-[9px] text-cyberneon font-mono uppercase tracking-wider">${currentS.title}</span>
+                    <h4 class="text-white font-bevietnam font-extrabold text-sm uppercase leading-snug">${currentS.content}</h4>
                 </div>
+                <p class="text-[11px] text-gray-400 leading-relaxed mt-2 border-t border-bordercolor/50 pt-2">${currentS.desc}</p>
             `;
+        }
+
+        function nextSlideDeck() {
+            if (slideDeckState.currentIdx < 6) {
+                slideDeckState.currentIdx++;
+                renderSlideCard();
+            }
+        }
+
+        function prevSlideDeck() {
+            if (slideDeckState.currentIdx > 0) {
+                slideDeckState.currentIdx--;
+                renderSlideCard();
+            }
         }
     </script>
 </body>
